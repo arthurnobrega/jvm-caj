@@ -1,0 +1,26 @@
+// Compiled from Gerente.java (version 1.5 : 49.0, super bit)
+public class classes.deboa.Gerente extends classes.deboa.Funcionario {
+  
+  // Field descriptor #6 I
+  public static int cod_ger;
+  
+  // Method descriptor #8 ()V
+  static {};
+    0  iconst_2
+    1  putstatic classes.deboa.Gerente.cod_ger : int [10]
+    4  return
+  
+  // Method descriptor #15 (Ljava/lang/String;)V
+  public Gerente(java.lang.String nome);
+    0  aload_0 [this]
+    1  aload_1 [nome]
+    2  invokespecial classes.deboa.Funcionario(java.lang.String) [16]
+    5  return
+  
+  // Method descriptor #8 ()V
+  public void receber();
+    0  getstatic java.lang.System.out : java.io.PrintStream [23]
+    3  ldc <String "Gerente recebe muito"> [29]
+    5  invokevirtual java.io.PrintStream.println(java.lang.String) : void [31]
+    8  return
+}
