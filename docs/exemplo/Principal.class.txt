@@ -1,0 +1,123 @@
+// Compiled from Principal.java (version 1.5 : 49.0, super bit)
+public class classes.deboa.Principal {
+  
+  // Method descriptor #6 ()V
+  public Principal();
+    0  aload_0 [this]
+    1  invokespecial java.lang.Object() [8]
+    4  return
+  
+  // Method descriptor #15 ([Ljava/lang/String;)V
+  public static void main(java.lang.String[] args);
+      0  new classes.deboa.Gerente [16]
+      3  dup
+      4  ldc <String "Ladeira"> [18]
+      6  invokespecial classes.deboa.Gerente(java.lang.String) [20]
+      9  astore_1 [g]
+     10  aload_1 [g]
+     11  invokestatic classes.deboa.Principal.estatico(classes.deboa.Gerente) : boolean [23]
+     14  istore_2 [b]
+     15  getstatic java.lang.System.out : java.io.PrintStream [27]
+     18  iload_2 [b]
+     19  invokevirtual java.io.PrintStream.println(boolean) : void [33]
+     22  iconst_2
+     23  anewarray int[] [39]
+     26  dup
+     27  iconst_0
+     28  iconst_5
+     29  newarray int [10]
+     31  dup
+     32  iconst_0
+     33  iconst_3
+     34  iastore
+     35  dup
+     36  iconst_1
+     37  sipush 321
+     40  iastore
+     41  dup
+     42  iconst_2
+     43  bipush 32
+     45  iastore
+     46  dup
+     47  iconst_3
+     48  bipush 33
+     50  iastore
+     51  dup
+     52  iconst_4
+     53  iconst_1
+     54  iastore
+     55  aastore
+     56  dup
+     57  iconst_1
+     58  iconst_5
+     59  newarray int [10]
+     61  dup
+     62  iconst_0
+     63  bipush 9
+     65  iastore
+     66  dup
+     67  iconst_1
+     68  iconst_5
+     69  iastore
+     70  dup
+     71  iconst_2
+     72  bipush 34
+     74  iastore
+     75  dup
+     76  iconst_3
+     77  sipush 543
+     80  iastore
+     81  dup
+     82  iconst_4
+     83  sipush 541
+     86  iastore
+     87  aastore
+     88  astore_3 [a]
+     89  getstatic java.lang.System.out : java.io.PrintStream [27]
+     92  aload_3 [a]
+     93  iconst_1
+     94  aaload
+     95  iconst_4
+     96  iaload
+     97  invokevirtual java.io.PrintStream.println(int) : void [41]
+    100  getstatic java.lang.System.out : java.io.PrintStream [27]
+    103  aload_3 [a]
+    104  arraylength
+    105  invokevirtual java.io.PrintStream.println(int) : void [41]
+    108  getstatic java.lang.System.out : java.io.PrintStream [27]
+    111  aload_3 [a]
+    112  iconst_0
+    113  aaload
+    114  arraylength
+    115  invokevirtual java.io.PrintStream.println(int) : void [41]
+    118  return
+  
+  // Method descriptor #26 (Lclasses/deboa/Gerente;)Z
+  public static boolean estatico(classes.deboa.Gerente parametro);
+     0  getstatic java.lang.System.out : java.io.PrintStream [27]
+     3  aload_0 [parametro]
+     4  invokevirtual classes.deboa.Gerente.getNome() : java.lang.String [51]
+     7  invokevirtual java.io.PrintStream.println(java.lang.String) : void [55]
+    10  aload_0 [parametro]
+    11  ldc <Float 41.32978> [57]
+    13  putfield classes.deboa.Gerente.idade : float [58]
+    16  aload_0 [parametro]
+    17  dup
+    18  getfield classes.deboa.Gerente.idade : float [58]
+    21  ldc <Float 35.0> [62]
+    23  frem
+    24  putfield classes.deboa.Gerente.idade : float [58]
+    27  getstatic java.lang.System.out : java.io.PrintStream [27]
+    30  aload_0 [parametro]
+    31  getfield classes.deboa.Gerente.idade : float [58]
+    34  invokevirtual java.io.PrintStream.println(float) : void [63]
+    37  aload_0 [parametro]
+    38  invokevirtual classes.deboa.Gerente.trabalhar() : void [66]
+    41  aload_0 [parametro]
+    42  invokevirtual classes.deboa.Gerente.receber() : void [69]
+    45  getstatic java.lang.System.out : java.io.PrintStream [27]
+    48  getstatic classes.deboa.Funcionario.cod_fun : int [72]
+    51  invokevirtual java.io.PrintStream.println(int) : void [41]
+    54  iconst_1
+    55  ireturn
+}

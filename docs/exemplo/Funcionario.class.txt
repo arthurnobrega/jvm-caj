@@ -1,0 +1,54 @@
+// Compiled from Funcionario.java (version 1.5 : 49.0, super bit)
+public class classes.deboa.Funcionario {
+  
+  // Field descriptor #6 I
+  public static int cod_fun;
+  
+  // Field descriptor #8 Ljava/lang/String;
+  private java.lang.String nome;
+  
+  // Field descriptor #10 F
+  public float idade;
+  
+  // Method descriptor #12 ()V
+  static {};
+    0  iconst_1
+    1  putstatic classes.deboa.Funcionario.cod_fun : int [14]
+    4  return
+  
+  // Method descriptor #19 (Ljava/lang/String;)V
+  public Funcionario(java.lang.String nome);
+     0  aload_0 [this]
+     1  invokespecial java.lang.Object() [20]
+     4  aload_0 [this]
+     5  aload_1 [nome]
+     6  putfield classes.deboa.Funcionario.nome : java.lang.String [22]
+     9  return
+  
+  // Method descriptor #12 ()V
+  public void trabalhar();
+    0  getstatic java.lang.System.out : java.io.PrintStream [27]
+    3  ldc <String "Funcionario trabalha"> [33]
+    5  invokevirtual java.io.PrintStream.println(java.lang.String) : void [35]
+    8  return
+  
+  // Method descriptor #12 ()V
+  public void receber();
+    0  getstatic java.lang.System.out : java.io.PrintStream [27]
+    3  ldc <String "Funcionario recebe"> [41]
+    5  invokevirtual java.io.PrintStream.println(java.lang.String) : void [35]
+    8  return
+  
+  // Method descriptor #44 ()Ljava/lang/String;
+  public java.lang.String getNome();
+    0  aload_0 [this]
+    1  getfield classes.deboa.Funcionario.nome : java.lang.String [22]
+    4  areturn
+  
+  // Method descriptor #19 (Ljava/lang/String;)V
+  public void setNome(java.lang.String nome);
+    0  aload_0 [this]
+    1  aload_1 [nome]
+    2  putfield classes.deboa.Funcionario.nome : java.lang.String [22]
+    5  return
+}
