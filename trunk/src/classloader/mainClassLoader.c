@@ -29,7 +29,10 @@ int main(int argc, char *argv[]) {
 		 */
 		init_instrucoes();
 		init_heap();
-
+/*
+ * acho q naõ precisa de testes...então seria bom tirar esse ifndef TESTE dai..naõ?
+ *
+ * */
 	#ifndef TESTE
 
 		if (argc != 2) {
@@ -47,7 +50,8 @@ int main(int argc, char *argv[]) {
 			return EXIT_FAILURE;
 		}
 
-		/*
+		/* ta... acho que pro classloader a gnete precisa mudar isso aqui..esse boot() ai
+		 *
 		 * executa o init da classe, começando de fato a execução da classe.
 		 */
 		boot(class_file);
@@ -55,7 +59,9 @@ int main(int argc, char *argv[]) {
 		printf("\n\nPressione qualquer tecla para sair...");
 		getchar();
 
-		/*compilacao condicional para testes..*/
+		/*acho q naõ precisa de testes...
+		 *
+		 * compilacao condicional para testes..*/
 	#else
 		teste();
 	#endif
