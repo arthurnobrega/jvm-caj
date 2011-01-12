@@ -102,6 +102,8 @@ int main(int argc, char *argv[]) {
 			/*pega o nome qualificado da classe para carregamento inicial: carregar a classe em
 			 * memória e executar seu clinit.
 			 */
+
+			//volt é o nome da classe, seria bom colocar isso pra ser passado pelo usuario ou deixar pra ser passado como parametro mesmo?
 			volt = (u1 *) argv[1];
 			class_file = get_classe_carregada(volt);
 			if (class_file == NULL) {
