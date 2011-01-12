@@ -3,13 +3,7 @@
  Instituto de Ciencias Exatas
  Departamento de Ciencia da Computacao
  Software Basico
- Turma A - 02/2007
- 
- Rafael Liu Santos 			05/23101
- Thiago de Oliveira Franca	05/24387
- Tulio Conrado Campos		05/24557
- 
- TNTvm
+ Turma A - 02/2010
  
  class.h: Define as funcoes basicas de execucao do .class como iniciacao, instanciacao e carregamento
  */
@@ -22,13 +16,12 @@ typedef struct classe_carregada_struct classe_carregada2;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../classfile/java.h"
-#include "../classfile/class_util.h"
-#include "../classfile/class_struc.h"
+#include "java.h"
+#include "class_util.h"
+#include "class_struc.h"
 #include "instrucoes.h"
 #include "debug.h"
 #include "heap.h"
-#include "debug.h"
 
 #define OBJECT_CLASS "java/lang/Object"
 

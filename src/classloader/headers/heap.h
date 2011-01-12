@@ -3,13 +3,7 @@
  Instituto de Ciencias Exatas
  Departamento de Ciencia da Computacao
  Software Basico
- Turma A - 02/2007
- 
- Rafael Liu Santos 			05/23101
- Thiago de Oliveira Franca	05/24387
- Tulio Conrado Campos		05/24557
- 
- TNTvm
+ Turma A - 02/2010
  
  heap.h: Define as funcoes de manipulacao do vetor de classes carregadas (aqui chamado de heap)
  */
@@ -18,9 +12,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../classfile/java.h"
-#include "../classfile/class_struc.h"
-#include "../classfile/class_util.h"
+#include "java.h"
+#include "class_struc.h"
+#include "class_util.h"
 #include "class.h"
 
 struct instancia_struct {

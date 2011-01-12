@@ -1,8 +1,8 @@
 /**
  * Alunos:
- *  Rafael Liu     05/23101
- *  Carlos Horita  05/31758
- *  Ana Helena     05/15710
+ *  Renato Carrasco Costa 07/37771
+ *  Arthur ...
+ *  Júlio ...
  *
  * Modulo de Impressao
  * - funcoes para impressao das diversas partes da estrutura do
