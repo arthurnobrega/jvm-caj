@@ -1,5 +1,4 @@
-#ifndef PRINT_CLASS_H
-#define PRINT_CLASS_H
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -74,5 +73,3 @@ int printf_Methods(ClassFile class_file);
  * Imprime pool de constantes
  */
 int printf_Constant_Pool(ClassFile class_file);
-
-#endif
