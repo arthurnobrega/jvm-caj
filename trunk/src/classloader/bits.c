@@ -3,13 +3,7 @@
  Instituto de Ciencias Exatas
  Departamento de Ciencia da Computacao
  Software Basico
- Turma A - 02/2007
- 
- Rafael Liu Santos 			05/23101
- Thiago de Oliveira Franca	05/24387
- Tulio Conrado Campos		05/24557
- 
- TNTvm
+
  
  bits.c: fornece funcoes utilitarias para tratamento de operacoes de baixo nivel 
  como conversao de endianess e bits.
