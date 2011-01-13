@@ -29,52 +29,63 @@ typedef unsigned char u1;
 #define CONSTANT_Utf8 	    1
 
 typedef struct {
+//	u1 tag; // Valor 7
 	u2 name_index;
 } CONSTANT_Class_info;
 
 typedef struct {
+//	u1 tag; // Valor 9
 	u2 class_index;
 	u2 name_and_type_index;
 } CONSTANT_Fieldref_info;
 
 typedef struct {
+//	u1 tag;  Valor 10
 	u2 class_index;
 	u2 name_and_type_index;
 } CONSTANT_Methodref_info;
 
 typedef struct {
+//	u1 tag; // Valor 11
 	u2 class_index;
 	u2 name_and_type_index;
 } CONSTANT_InterfaceMethodref_info;
 
 typedef struct {
+//	u1 tag; // Valor 8
 	u2 string_index;
 } CONSTANT_String_info;
 
 typedef struct {
+//	u1 tag; // Valor 3
 	u4 bytes;
 } CONSTANT_Integer_info ;
 
 typedef struct {
+//	u1 tag; // Valor 4
 	u4 bytes;
 } CONSTANT_Float_info ;
 
 typedef struct {
+//	u1 tag; // Valor 5
 	u4 high_bytes;
 	u4 low_bytes;
 } CONSTANT_Long_info;
 
 typedef struct {
+//	u1 tag; // Valor 6
 	u4 high_bytes;
 	u4 low_bytes;
 } CONSTANT_Double_info;
 
 typedef struct {
+//	u1 tag; // Valor 12
 	u2 name_index;
 	u2 descriptor_index;
 } CONSTANT_NameAndType_info;
 
 typedef struct {
+//	u1 tag; // Valor 1
 	u2 length;
 	u1 *bytes;
 } CONSTANT_Utf8_info;
@@ -228,8 +239,6 @@ struct attribute_info_struct {
 	attribute_union info;
 };
 
-
-
 typedef struct {
 	u2 access_flags;
 	u2 name_index;
@@ -238,7 +247,6 @@ typedef struct {
 	attribute_info *attributes;
 } field_info;
 
-
 typedef struct {
 	u2 access_flags;
 	u2 name_index;
@@ -246,7 +254,6 @@ typedef struct {
 	u2 attributes_count;
 	attribute_info *attributes;
 } method_info; 
-
 
 /*Class file structure*/    
 typedef struct {
