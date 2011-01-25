@@ -416,8 +416,6 @@ int _nop() {
 int _aconst_null() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
-#endif
-#ifdef DEBUG
 	printf("Elemento inserido na pilha: NULL\n");
 #endif
 	push(0);

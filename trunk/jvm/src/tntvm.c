@@ -21,6 +21,7 @@
 #include "headers/stack.h"
 #include "classfile/java.h"
 #include "headers/class.h"
+#include "headers/debug.h"
 
 /*#include "testes/testes.h"*/
 

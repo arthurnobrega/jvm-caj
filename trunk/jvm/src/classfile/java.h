@@ -35,25 +35,30 @@ typedef unsigned char u1;
 #define CONSTANT_Utf8 	    1
 
 typedef struct {
+	u1 tag;
 	u2 name_index;
 } CONSTANT_Class_info;
 
 typedef struct {
+	u1 tag;
 	u2 class_index;
 	u2 name_and_type_index;
 } CONSTANT_Fieldref_info;
 
 typedef struct {
+	u1 tag;
 	u2 class_index;
 	u2 name_and_type_index;
 } CONSTANT_Methodref_info;
 
 typedef struct {
+	u1 tag;
 	u2 class_index;
 	u2 name_and_type_index;
 } CONSTANT_InterfaceMethodref_info;
 
 typedef struct {
+	u1 tag;
 	u2 string_index;
 } CONSTANT_String_info;
 
@@ -62,25 +67,30 @@ typedef struct {
 } CONSTANT_Integer_info ;
 
 typedef struct {
+	u1 tag;
 	u4 bytes;
 } CONSTANT_Float_info ;
 
 typedef struct {
+	u1 tag;
 	u4 high_bytes;
 	u4 low_bytes;
 } CONSTANT_Long_info;
 
 typedef struct {
+	u1 tag;
 	u4 high_bytes;
 	u4 low_bytes;
 } CONSTANT_Double_info;
 
 typedef struct {
+	u1 tag;
 	u2 name_index;
 	u2 descriptor_index;
 } CONSTANT_NameAndType_info;
 
 typedef struct {
+	u1 tag;
 	u2 length;
 	u1 *bytes;
 } CONSTANT_Utf8_info;
