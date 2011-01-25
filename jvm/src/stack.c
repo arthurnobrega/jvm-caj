@@ -15,7 +15,6 @@ stack.c: Implementa as funcoes de manipulacao da pilha de execução e de seus fra
  */
 #include "headers/stack.h"
 #include "classfile/print_class.h"
-#include "headers/debug.h"
 #include "classfile/class_util.h"
 #include "headers/class.h"
 
