@@ -379,21 +379,30 @@ void add_multiarray(u4 ** ponteiro, u4 * tamanhos, u4 dimensoes ){
  */
 #ifdef DEBUG
 void printdbg_iconst(int valor) {
-#ifdef DEBUG
+
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
-#endif
-#ifdef DEBUG
 	printf("Elemento inserido na pilha: %d\n", valor);
-#endif
+
 }
 void printdbg_fconst(float valor) {
-#ifdef DEBUG
+
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
-#endif
-#ifdef DEBUG
 	printf("Elemento inserido na pilha: %f\n", valor);
-#endif
+
 }
+void printdbg_lconst(long valor) {
+
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+	printf("Elemento inserido na pilha: %ld\n", valor);
+
+}
+void printdbg_dconst(double valor) {
+
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+	printf("Elemento inserido na pilha: %f\n", valor);
+
+}
+
 #endif
 
 /* instruções */
