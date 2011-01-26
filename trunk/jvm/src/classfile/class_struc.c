@@ -35,7 +35,7 @@ void lerUtf8(FILE *arq, CONSTANT_Utf8_info *utf8_info) {
 }
 
 int lerConstantPool(FILE *arq, ClassFile *class_file) {
-	int i, length;
+	int i;
 	u1 tag;
 	u2 tamanho = fget_u2(arq);
 	cp_info *info;
@@ -45,8 +45,8 @@ int lerConstantPool(FILE *arq, ClassFile *class_file) {
 
 	/* aloca tamanho do array */
 	class_file->constant_pool_count = tamanho;
-	length = sizeof(cp_info) * tamanho + 1;
-	class_file->constant_pool = malloc(length);
+	//TODO: Verificar se está correto agora, alterado para (tamanho + 1)
+	class_file->constant_pool = malloc(sizeof(cp_info) * (tamanho + 1));
 
 	/* cria cada elemento do array */
 	info = class_file->constant_pool;
@@ -88,6 +88,7 @@ int lerConstantPool(FILE *arq, ClassFile *class_file) {
 			break;
 
 		default:
+			//TODO: Verificar se para.
 			return UNDEFINED_FLAG;
 		}
 	}
@@ -172,7 +173,7 @@ int lerAttributesArray(FILE *arq, cp_info *info, attribute_info **attributes, in
 		(*attributes)[i].attribute_name_index = fget_u2(arq);
 		(*attributes)[i].attribute_length = fget_u4(arq);
 
-		if (strncmp("Code", (char *)get_ascii(info, (*attributes)[i].attribute_name_index), strlen("Code")) == 0) {
+		if (strncmp("Code", (char *)get_utf8_string(info, (*attributes)[i].attribute_name_index), strlen("Code")) == 0) {
 			/* trata atribute code */
 			(*attributes)[i].info.code.max_stack = fget_u2(arq);
 			(*attributes)[i].info.code.max_locals = fget_u2(arq);
@@ -198,7 +199,7 @@ int lerAttributesArray(FILE *arq, cp_info *info, attribute_info **attributes, in
 			(*attributes)[i].info.code.attributes_count = fget_u2(arq);
 			lerAttributesArray(arq, info, &((*attributes)[i].info.code.attributes), (*attributes)[i].info.code.attributes_count);
 
-		} else if (strncmp("LineNumberTable", (char *)get_ascii(info, (*attributes)[i].attribute_name_index), strlen("LineNumberTable")) == 0) {
+		} else if (strncmp("LineNumberTable", (char *)get_utf8_string(info, (*attributes)[i].attribute_name_index), strlen("LineNumberTable")) == 0) {
 			/* trata line number */
 			(*attributes)[i].info.line_number_table.line_number_table_length = fget_u2(arq);
 			(*attributes)[i].info.line_number_table.line_number = malloc(sizeof(LineNumberTable_attribute) * (*attributes)[i].info.line_number_table.line_number_table_length);
@@ -207,7 +208,7 @@ int lerAttributesArray(FILE *arq, cp_info *info, attribute_info **attributes, in
 				(*attributes)[i].info.line_number_table.line_number[j].line_number = fget_u2(arq);
 			}
 
-		} else if (strncmp("LocalVariableTable", (char *)get_ascii(info, (*attributes)[i].attribute_name_index), strlen("LocalVariableTable")) == 0) {
+		} else if (strncmp("LocalVariableTable", (char *)get_utf8_string(info, (*attributes)[i].attribute_name_index), strlen("LocalVariableTable")) == 0) {
 			/* trata local variable */
 			(*attributes)[i].info.local_variable_table.local_variable_table_length = fget_u2(arq);
 			(*attributes)[i].info.local_variable_table.local_variable = malloc(sizeof(LocalVariableTable_attribute) * (*attributes)[i].info.local_variable_table.local_variable_table_length);
@@ -230,8 +231,8 @@ int lerAttributesArray(FILE *arq, cp_info *info, attribute_info **attributes, in
 	return OK;
 }
 
-int lerClass(FILE *arq, ClassFile *class_file) {
-	u2 super;
+int read_class_file(FILE *arq, ClassFile *class_file) {
+	u2 super_class;
 	assert (arq != NULL);
 	assert (class_file != NULL);
 
@@ -259,9 +260,9 @@ int lerClass(FILE *arq, ClassFile *class_file) {
 	/*le a this_class*/
 	class_file->this_class=fget_u2(arq);
 	/*le super class*/
-	super = fget_u2(arq);
-	if (super <= class_file->constant_pool_count) {
-		class_file->super_class = super;
+	super_class = fget_u2(arq);
+	if (super_class <= class_file->constant_pool_count) {
+		class_file->super_class = super_class;
 	} else {
 		class_file->super_class = 0;
 	}

@@ -37,13 +37,13 @@ void teste_stack() {
 }
 
 void teste_heap() {
-	classe_carregada *classe = get_classe_carregada("classes/Classe1");
+	heap_element *classe = get_heap_element("classes/Classe1");
 	if (classe == NULL) {
 		printf("class1: pau (NULL)\n");
 	} else {
 		printf(strcmp(get_nome_qualificado(classe->classe), "classes/Classe1") == 0 ? "classe1: ok\n" : "classe1: pau\n");
 	}
-	classe = get_classe_carregada("classes/Classe2");
+	classe = get_heap_element("classes/Classe2");
 	if (classe == NULL) {
 		printf("class2: pau (NULL)\n");
 	} else {
@@ -562,7 +562,7 @@ void teste_primeiras_instrucoes(){
 }
 
 void teste_ultimas_instrucoes() {
-	classe_carregada *classe = get_classe_carregada("classes/Instrucoes");
+	heap_element *classe = get_heap_element("classes/Instrucoes");
 	if (classe == NULL) {
 		printf("erro ao chamar get_classe_carregada()");
 		return;
@@ -605,12 +605,12 @@ void teste_ultimas_instrucoes() {
 }
 
 void teste_class() {
-	classe_carregada *classe = get_classe_carregada("classes/Classe2");
+	heap_element *classe = get_heap_element("classes/Classe2");
 	printf("%s", get_nome_qualificado(classe->classe));
 }
 
 void teste() {
-	init_instrucoes();
+	init_instructions();
 	init_heap();
 	
 	printf("\n***\nteste_stack()\n");
@@ -626,6 +626,6 @@ void teste() {
 	printf("\n***\nteste_class()\n");
 	//teste_class();
 	
-	classe_carregada *classe = get_classe_carregada("Principal");
+	heap_element *classe = get_heap_element("Principal");
 	boot(classe);
 }

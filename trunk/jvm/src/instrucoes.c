@@ -16,7 +16,7 @@ insturcoes.c: Módulo com a implementação das instruções da Virtual Machine.
 #include "headers/instrucoes.h"
 #include "headers/debug.h"
 
-void init_instrucoes() {
+void init_instructions() {
 	instrucao[0x00] = _nop;
 	instrucao[0x01] = _aconst_null;
 	instrucao[0x02] = _iconst_m1;
@@ -221,12 +221,12 @@ void init_instrucoes() {
 	instrucao[0xc9] = _jsr_w;
 }
 
-int execute(classe_carregada *classe, char *func_nome, char *func_desc, int estatico) {
+int execute(heap_element *classe, char *func_nome, char *func_desc, int estatico) {
 	Code_attribute *code;
-	classe_carregada *cl = classe;
+	heap_element *cl = classe;
 	int i, count = 0;
 	u4 *stack;
-	instancia *objref = NULL;
+	instance *objref = NULL;
 	int controle;
 	u1 op_code;
 	
@@ -253,7 +253,7 @@ int execute(classe_carregada *classe, char *func_nome, char *func_desc, int esta
 
 	/* pega referência da classe (se não for static) */
 	if (estatico == FALSE) {
-		objref = (instancia *) pop();
+		objref = (instance *) pop();
 	}
 
 	/* cria frame */
@@ -309,11 +309,11 @@ void invoke(int estatico) {
 
 	/* pega nome da função */
 	index = info[branch].info.fieldref_info.name_and_type_index;
-	func_name = get_ascii(info, info[index].info.name_and_type_info.name_index);
+	func_name = get_utf8_string(info, info[index].info.name_and_type_info.name_index);
 
 	/* pega parâmetros da função */
 	index = frame_stack->constant_pool[branch].info.fieldref_info.name_and_type_index;
-	func_desc = get_ascii(frame_stack->constant_pool, frame_stack->constant_pool[index].info.name_and_type_info.descriptor_index);
+	func_desc = get_utf8_string(frame_stack->constant_pool, frame_stack->constant_pool[index].info.name_and_type_info.descriptor_index);
 
 	if (strcmp((char *) class_name, "java/lang/Object") == 0
 			&& strcmp((char *) func_name, "<init>") == 0) {
@@ -340,7 +340,7 @@ void invoke(int estatico) {
 			printf("%s\n", (char *) pop());
 		}
 	} else {
-		classe_carregada *classe = get_classe_carregada(class_name);
+		heap_element *classe = get_heap_element(class_name);
 		execute(classe, (char *) func_name, (char *) func_desc, estatico);
 	}
 }
@@ -575,7 +575,7 @@ int _ldc() {
 #endif
 		break;
 	case CONSTANT_String:
-		valor = get_ascii(frame_stack->constant_pool, frame_stack->constant_pool[indice].info.string_info.string_index);
+		valor = get_utf8_string(frame_stack->constant_pool, frame_stack->constant_pool[indice].info.string_info.string_index);
 #ifdef DEBUG
 		printf("Elemento inserido na pilha: %s\n", (char *)valor);
 #endif
@@ -604,7 +604,7 @@ int _ldc_w() {
 #endif
 		break;
 	case CONSTANT_String:
-		string = get_ascii(frame_stack->constant_pool, frame_stack->constant_pool[indice].info.string_info.string_index);
+		string = get_utf8_string(frame_stack->constant_pool, frame_stack->constant_pool[indice].info.string_info.string_index);
 #ifdef DEBUG
 		printf("Elemento inserido na pilha: %s\n", (char *)string);
 #endif
@@ -1381,6 +1381,16 @@ int _imul() {
 	int valor1, valor2;
 	valor1 = (int) pop();
 	valor2 = (int) pop();
+//	if (is_inegative(valor1)) {
+//		valor1 = convert_u4_to_int(valor1);
+//	}
+//
+//	if (is_inegative(valor2)) {
+//		valor2 = convert_u4_to_int(valor2);
+//	}
+//
+//	printf("%d %d\n", (int)valor1, (int)valor2);
+
 	push((u4)(valor1 * valor2));
 	return NORMAL_INST;
 }
@@ -2278,7 +2288,7 @@ int _return() {
 }
 
 int _getstatic() {
-	classe_carregada *classe;
+	heap_element *classe;
 	u4 valor;
 
 #ifdef DEBUG
@@ -2293,7 +2303,7 @@ int _getstatic() {
 		/* se for da classe System ignore. trataremos com stubs as suas chamadas */
 		return NORMAL_INST;
 	}
-	classe = get_classe_carregada(class_name);
+	classe = get_heap_element(class_name);
 
 	valor = get_field_value(frame_stack->constant_pool, classe->instancia_estatica, branch);
 
@@ -2311,7 +2321,7 @@ int _putstatic() {
 	/* retorna o nome da classe */
 	u2 index = frame_stack->constant_pool[branch].info.fieldref_info.class_index;
 	u1 *class_name = get_class(frame_stack->constant_pool, index);
-	classe_carregada *classe = get_classe_carregada(class_name);
+	heap_element *classe = get_heap_element(class_name);
 
 	u4 valor = pop();
 	put_field_value(frame_stack->constant_pool, classe->instancia_estatica, branch, valor);
@@ -2326,7 +2336,7 @@ int _getfield() {
 	u2 branch = carrega_branch();
 	u4 objref = pop();
 
-	u4 valor = get_field_value(frame_stack->constant_pool, (instancia *) objref, branch);
+	u4 valor = get_field_value(frame_stack->constant_pool, (instance *) objref, branch);
 
 	push(valor);
 
@@ -2341,7 +2351,7 @@ int _putfield() {
 	u4 valor = pop();
 	u4 objref = pop();
 
-	put_field_value(frame_stack->constant_pool, (instancia *) objref, branch, valor);
+	put_field_value(frame_stack->constant_pool, (instance *) objref, branch, valor);
 
 	return NORMAL_INST;
 }
@@ -2386,7 +2396,7 @@ int _new() {
 #endif
 	u2 branch = carrega_branch();
 	u1 *class_name = get_class(frame_stack->constant_pool, branch);
-	instancia *objref = criar_instancia(class_name);
+	instance *objref = create_instance(class_name);
 
 	push((u4) objref);
 	return NORMAL_INST;
@@ -2548,4 +2558,13 @@ int _goto_w() {
 int _jsr_w() {
 	/*Não implementado.*/
 	return NAO_IMP;
+}
+
+int is_inegative(u4 value) {
+	return value >> 31 & 0x01;
+}
+
+int convert_u4_to_int(u4 value) {
+	printf("%d\n", -(~value + 1));
+	return (int)-(~value + 1);
 }

@@ -16,12 +16,12 @@
 #include "headers/class.h"
 #include "classfile/print_class.h"
 
-void boot(classe_carregada *classe) {
+void boot(heap_element *classe) {
 	execute(classe, "main", "([Ljava/lang/String;)V", TRUE);
 }
 
-Code_attribute *get_code(classe_carregada **classe, char *nome, char *desc) {
-	instancia *obj = (*classe)->instancia_estatica;
+Code_attribute *get_code(heap_element **classe, char *nome, char *desc) {
+	instance *obj = (*classe)->instancia_estatica;
 	method_info *metodo;
 	attribute_info *att;
 
@@ -31,7 +31,7 @@ Code_attribute *get_code(classe_carregada **classe, char *nome, char *desc) {
 
 	/* percorre hierarquia */
 	while (obj != NULL) {
-		(*classe) = get_classe_carregada(obj->nome_qualificado);
+		(*classe) = get_heap_element(obj->nome_qualificado);
 		metodo = get_metodo((*classe)->classe, nome, desc);
 		if (metodo != NULL) {
 			att = get_attribute("Code", (*classe)->classe->constant_pool, metodo->attributes, metodo->attributes_count);
@@ -61,8 +61,8 @@ method_info *get_metodo(ClassFile *class_file, char *nome, char *desc) {
 		info = class_file->methods[i];
 
 		/* verifica se o nome do metodo */
-		nome_tmp = get_ascii(class_file->constant_pool, info.name_index);
-		desc_tmp = get_ascii(class_file->constant_pool, info.descriptor_index);
+		nome_tmp = get_utf8_string(class_file->constant_pool, info.name_index);
+		desc_tmp = get_utf8_string(class_file->constant_pool, info.descriptor_index);
 		if (strcmp((char *) nome, (char *) nome_tmp) == 0
 				&& strcmp((char *) desc, (char *) desc_tmp) == 0) {
 			return &(class_file->methods[i]);
@@ -77,7 +77,7 @@ attribute_info *get_attribute(char *nome, cp_info *cp, attribute_info *att, u2 c
 
 	for (i = 0; i < count; i++) {
 		/* verifica se eh um metodo */
-		if (strcmp((char *) nome, (char *) get_ascii(cp, att[i].attribute_name_index)) == 0) {
+		if (strcmp((char *) nome, (char *) get_utf8_string(cp, att[i].attribute_name_index)) == 0) {
 			return &(att[i]);
 		}
 	}
@@ -85,11 +85,11 @@ attribute_info *get_attribute(char *nome, cp_info *cp, attribute_info *att, u2 c
 	return NULL;
 }
 
-instancia *criar_instancia(u1 *class_name) {
-	classe_carregada *classe;
+instance *create_instance(u1 *class_name) {
+	heap_element *element;
 	ClassFile *class_file;
 	u1 *super;
-	instancia *objeto;
+	instance *objeto;
 
 	assert(class_name != NULL);
 
@@ -106,20 +106,20 @@ instancia *criar_instancia(u1 *class_name) {
 	}
 
 	/* tenta puxar a classe do heap, se nao tiver carrega */
-	classe = get_classe_carregada(class_name);
-	if (classe == NULL) {
-		classe = load_class(class_name);
-	}
-	class_file = classe->classe;
+	element = get_heap_element(class_name);
+//	if (classe == NULL) {
+//		classe = load_class(class_name);
+//	}
+	class_file = element->classe;
 
 	/* cria instancia */
-	objeto = (instancia *) malloc(sizeof(instancia));
+	objeto = (instance *) malloc(sizeof(instance));
 	objeto->nome_qualificado = class_name;
 	super = get_class(class_file->constant_pool, class_file->super_class);
 #ifdef DEBUG
 	printf("criar_instancia(): superclasse = '%s'\n", super);
 #endif
-	objeto->super = criar_instancia(super);
+	objeto->super = create_instance(super);
 	objeto->fields_count = class_file->fields_count;
 	objeto->field = (u4 *) malloc(sizeof(u4) * objeto->fields_count);
 
@@ -133,12 +133,12 @@ instancia *criar_instancia(u1 *class_name) {
  * onde ha a inicializacao de atributos estaticos.
  * 
  */
-classe_carregada *load_class(u1 *class_name) {
+heap_element *load_class(u1 *class_name) {
 	ClassFile *class_file = (ClassFile *) malloc(sizeof(ClassFile));
-	classe_carregada *classe;
+	heap_element *classe;
 	FILE *arq;
 
-	u1 *fn = c2f(class_name);
+	u1 *fn = get_modified_class_name(class_name);
 #ifdef DEBUG
 	printf("load_class(): Carregando classe '%s'\n", fn);
 #endif
@@ -156,7 +156,7 @@ classe_carregada *load_class(u1 *class_name) {
 	}
 
 	/* le arquivo .class */
-	if (!lerClass(arq, class_file)) {
+	if (!read_class_file(arq, class_file)) {
 		printf("Erro: arquivo .class invalido ou corrompido\n");
 		fclose(arq);
 		exit(EXIT_FAILURE);
@@ -165,8 +165,8 @@ classe_carregada *load_class(u1 *class_name) {
 	printf("load_class(): Estrutura de classe lida\n");
 #endif
 
-	classe = adc_class(class_file);
-	classe->instancia_estatica = criar_instancia(class_name);
+	classe = add_heap_element(class_file);
+	classe->instancia_estatica = create_instance(class_name);
 
 	/* inicializa classe com um pseudo-codigo */
 	if (execute(classe, "<clinit>", "()V", TRUE)) {
@@ -190,9 +190,9 @@ classe_carregada *load_class(u1 *class_name) {
 	return classe;
 }
 
-u4 get_field_value(cp_info *info, instancia *objeto, u2 fieldref) {
-	instancia *obj = objeto;
-	classe_carregada *classe;
+u4 get_field_value(cp_info *info, instance *objeto, u2 fieldref) {
+	instance *obj = objeto;
+	heap_element *classe;
 	u2 index;
 	u1 *name;
 
@@ -201,11 +201,11 @@ u4 get_field_value(cp_info *info, instancia *objeto, u2 fieldref) {
 
 	/* pega o nome do field */
 	index = info[fieldref].info.fieldref_info.name_and_type_index;
-	name = get_ascii(info, info[index].info.name_and_type_info.name_index);
+	name = get_utf8_string(info, info[index].info.name_and_type_info.name_index);
 
 	/* percorre hierarquia */
 	while (obj != NULL) {
-		classe = get_classe_carregada(obj->nome_qualificado);
+		classe = get_heap_element(obj->nome_qualificado);
 		index = get_field_index(classe->classe, name);
 		if (index < classe->classe->fields_count) {
 			return obj->field[index];
@@ -220,9 +220,9 @@ u4 get_field_value(cp_info *info, instancia *objeto, u2 fieldref) {
 	return 0;
 }
 
-void put_field_value(cp_info *info, instancia *objeto, u2 fieldref, u4 valor) {
-	instancia *obj = objeto;
-	classe_carregada *classe;
+void put_field_value(cp_info *info, instance *objeto, u2 fieldref, u4 valor) {
+	instance *obj = objeto;
+	heap_element *classe;
 	u2 index;
 	u1 *name;
 
@@ -231,11 +231,11 @@ void put_field_value(cp_info *info, instancia *objeto, u2 fieldref, u4 valor) {
 
 	/* pega o nome do field */
 	index = info[fieldref].info.fieldref_info.name_and_type_index;
-	name = get_ascii(info, info[index].info.name_and_type_info.name_index);
+	name = get_utf8_string(info, info[index].info.name_and_type_info.name_index);
 
 	/* percorre hierarquia */
 	while (obj != NULL) {
-		classe = get_classe_carregada(obj->nome_qualificado);
+		classe = get_heap_element(obj->nome_qualificado);
 		index = get_field_index(classe->classe, name);
 		if (index < classe->classe->fields_count) {
 			obj->field[index] = valor;
@@ -259,7 +259,7 @@ u2 get_field_index(ClassFile *class_file, u1 *field_name) {
 	info = class_file->constant_pool;
 
 	for (i = 0; i < class_file->fields_count; i++) {
-		u1 *name_tmp = get_ascii(info, class_file->fields[i].name_index);
+		u1 *name_tmp = get_utf8_string(info, class_file->fields[i].name_index);
 		if (strcmp((char *) field_name, (char *) name_tmp) == 0) {
 			break;
 		}

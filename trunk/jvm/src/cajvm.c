@@ -31,38 +31,28 @@
  */
 ClassFile *class_file;
 
-/*
- * imprime saida de erro por parametros para usuario.
- */
-void print_help() {
-	printf("USO: tntvm [nome qualificado da classe]\n");
-}
-
-
 int main(int argc, char *argv[]) {
-	classe_carregada *class_file;
-	u1 *volt;
+	heap_element *class_file;
+	u1 *class_name;
 
 	/*
 	 * inicializacao necessaria do vetor de instrucoes (para mapeamento pelo compilador das
 	 * instrucoes) e inicializacao da heap, inicializando a estrutura de dados (do tipo
 	 * classes_carregadas).
 	 */
-	init_instrucoes();
+	init_instructions();
 	init_heap();
-
-#ifndef TESTE
 	
 	if (argc != 2) {
-		print_help();
+		printf("USO: cajvm [nome qualificado da classe]\n");
 		return EXIT_FAILURE;
 	}
 
 	/*pega o nome qualificado da classe para carregamento inicial: carregar a classe em
 	 * memória e executar seu clinit.
 	 */
-	volt = (u1 *) argv[1];
-	class_file = get_classe_carregada(volt);
+	class_name = (u1 *) argv[1];
+	class_file = get_heap_element(class_name);
 	if (class_file == NULL) {
 		printf("Não foi possível carregar a classe");
 		return EXIT_FAILURE;
@@ -76,9 +66,6 @@ int main(int argc, char *argv[]) {
 	getchar();
 	
 	/*compilacao condicional para testes..*/
-#else
-	teste();
-#endif
 
 	return (EXIT_SUCCESS);
 }

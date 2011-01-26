@@ -57,7 +57,7 @@ attribute_info *get_attribute(char *nome, cp_info *cp, attribute_info *att, u2 c
 /**
  * Cria uma instancia da classe
  */
-instancia3 *criar_instancia(u1 *class_name);
+instancia3 *create_instance(u1 *class_name);
 
 classe_carregada2 *load_class(u1 *class_name);
 
