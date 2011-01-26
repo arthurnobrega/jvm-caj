@@ -568,10 +568,15 @@ int _ldc() {
 	indice = frame_stack->code_attribute->code[frame_stack->pc];
 	switch(frame_stack->constant_pool[indice].tag){
 	case CONSTANT_Integer:
-	case CONSTANT_Float:
 		push(frame_stack->constant_pool[indice].info.integer_info.bytes);
 #ifdef DEBUG
 		printf("Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.integer_info.bytes);
+#endif
+		break;
+	case CONSTANT_Float:
+		push(frame_stack->constant_pool[indice].info.float_info.bytes);
+#ifdef DEBUG
+		printf("Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.float_info.bytes);
 #endif
 		break;
 	case CONSTANT_String:
@@ -597,10 +602,15 @@ int _ldc_w() {
 	indice = carrega_branch();
 	switch(frame_stack->constant_pool[indice].tag){
 	case CONSTANT_Integer:
-	case CONSTANT_Float:
 		push(frame_stack->constant_pool[indice].info.integer_info.bytes);
+		#ifdef DEBUG
+				printf("Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.integer_info.bytes);
+		#endif
+				break;
+	case CONSTANT_Float:
+		push(frame_stack->constant_pool[indice].info.float_info.bytes);
 #ifdef DEBUG
-		printf("Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.integer_info.bytes);
+		printf("Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.float_info.bytes);
 #endif
 		break;
 	case CONSTANT_String:
