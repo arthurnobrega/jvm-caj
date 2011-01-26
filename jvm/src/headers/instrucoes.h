@@ -63,7 +63,7 @@ int (*instrucao[0xff]) ();
 /**
  * Inicializa vetor de instruções
  */
-void init_instrucoes();
+void init_instructions();
 
 int execute(classe_carregada3 *classe, char *func_nome, char *func_desc, int estatico);
 
@@ -292,5 +292,8 @@ int _jsr_w();
  * para testes...
  * */
 void teste_instrucoes(void);
+
+int is_inegative(u4 value);
+int convert_u4_to_int(u4 value);
 
 #endif /*INSTRUCOES_H_*/

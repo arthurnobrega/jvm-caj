@@ -16,21 +16,21 @@
 #include "headers/heap.h"
 
 void init_heap() {
-	classes = NULL;
+	heap = NULL;
 }
 
-classe_carregada *adc_class(ClassFile *class_file) {
-	classe_carregada *classe;
+heap_element *add_heap_element(ClassFile *class_file) {
+	heap_element *element;
 	
 	assert(class_file != NULL);
 
 	/* cria instancia */
-	classe = (classe_carregada *) malloc(sizeof(classe_carregada));
-	classe->classe = class_file;
-	classe->prox = classes;
-	classes = classe;
+	element = (heap_element *) malloc(sizeof(heap_element));
+	element->classe = class_file;
+	element->prox = heap;
+	heap = element;
 
-	return classe;
+	return element;
 }
 
 /**
@@ -38,8 +38,8 @@ classe_carregada *adc_class(ClassFile *class_file) {
  * instancia do objeto a ser alterado
  * indice fieldref do field
  */
-classe_carregada *get_classe_carregada(u1 *class_name) {
-	classe_carregada *tmp = classes;
+heap_element *get_heap_element(u1 *class_name) {
+	heap_element *tmp = heap;
 
 	assert(class_name != NULL);
 
@@ -54,7 +54,7 @@ classe_carregada *get_classe_carregada(u1 *class_name) {
 	}
 
 #ifdef DEBUG
-	printf("criar_instancia(): Classe '%s' carregada na heap\n", class_name);
+	printf("criar_instancia(): Classe '%s' será carregada na heap\n", class_name);
 #endif
 	return load_class(class_name);
 }

@@ -30,7 +30,7 @@
 /**
  * Le strutura do .class
  */
-int lerClass(FILE *arq, ClassFile *class_file);
+int read_class_file(FILE *arq, ClassFile *class_file);
 
 /**
  * Le elemento utf8 do pool de constante

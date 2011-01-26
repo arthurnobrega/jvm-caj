@@ -245,7 +245,6 @@ struct attribute_info_struct {
 };
 
 
-
 typedef struct {
 	u2 access_flags;
 	u2 name_index;

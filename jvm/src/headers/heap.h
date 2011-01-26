@@ -29,30 +29,30 @@ struct instancia_struct {
 	u4 *field;
 	struct instancia_struct *super;
 };
-typedef struct instancia_struct instancia;
+typedef struct instancia_struct instance;
 
 struct classe_carregada_struct {
 	ClassFile *classe;
-	instancia *instancia_estatica;
+	instance *instancia_estatica;
 	struct classe_carregada_struct *prox;
 };
-typedef struct classe_carregada_struct classe_carregada;
+typedef struct classe_carregada_struct heap_element;
 
 /*
- * Instância global à heap que representa o vetor de classes carregadas dinamicamente pela tntvm.
+ * Instância global à heap que representa o vetor de classes carregadas dinamicamente pela jvm.
  */
-classe_carregada *classes;
+heap_element *heap;
 
 void init_heap();
 
 /*
  * Adiciona classe ao heap
 */
-classe_carregada *adc_class(ClassFile *class_file);
+heap_element *add_heap_element(ClassFile *class_file);
 
 /**
  * Retorna classe carregada do heap
  */
-classe_carregada *get_classe_carregada(u1 *class_name);
+heap_element *get_heap_element(u1 *class_name);
 
 #endif /*HEAP_H_*/

@@ -34,7 +34,7 @@ int set_locale();
 /**
  * Retorna ponteiro ascii do utf8
  */
-u1 *get_ascii(cp_info *info, u2 index);
+u1 *get_utf8_string(cp_info *info, u2 index);
 
 /**
  * Retorna ponteiro para o nome da classe

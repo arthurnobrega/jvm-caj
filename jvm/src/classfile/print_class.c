@@ -188,7 +188,7 @@ int printf_Attributes_rec(cp_info *info, attribute_info *attributes, u2 attribut
 		printf_utf8(info, attributes[i].attribute_name_index); printf(" }\n");
 		printf("%s  -> attribute length: %d\n", ident, attributes[i].attribute_length);
 
-		if (strncmp("Code", (char *)get_ascii(info, attributes[i].attribute_name_index), strlen("Code")) == 0) {
+		if (strncmp("Code", (char *)get_utf8_string(info, attributes[i].attribute_name_index), strlen("Code")) == 0) {
 		/* trata atribute code */
 			code = attributes[i].info.code;
 
@@ -216,7 +216,7 @@ int printf_Attributes_rec(cp_info *info, attribute_info *attributes, u2 attribut
 			printf("%s  -> attributes count: %i\n", ident, code.attributes_count);
 			printf_Attributes_rec(info, code.attributes, code.attributes_count, identacao + 2);
 
-		} else if (strncmp("LineNumberTable", (char *)get_ascii(info, attributes[i].attribute_name_index), strlen("LineNumberTable")) == 0) {
+		} else if (strncmp("LineNumberTable", (char *)get_utf8_string(info, attributes[i].attribute_name_index), strlen("LineNumberTable")) == 0) {
 		/* trata line number */
 			line_num = attributes[i].info.line_number_table;
 
@@ -226,7 +226,7 @@ int printf_Attributes_rec(cp_info *info, attribute_info *attributes, u2 attribut
 				printf("%s       line number: %i\n", ident, line_num.line_number[j].line_number);
 			}
 
-		} else if (strncmp("LocalVariableTable", (char *)get_ascii(info, attributes[i].attribute_name_index), strlen("LocalVariableTable")) == 0) {
+		} else if (strncmp("LocalVariableTable", (char *)get_utf8_string(info, attributes[i].attribute_name_index), strlen("LocalVariableTable")) == 0) {
 		/* trata local variable */
 			local_var = attributes[i].info.local_variable_table;
 

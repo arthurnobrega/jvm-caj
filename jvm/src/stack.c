@@ -63,7 +63,7 @@ arrays_struct * get_array(void * referencia){
 	return ret;
 }
 
-void create_frame(instancia *objeto, Code_attribute *code_attribute, cp_info *constant_pool) {
+void create_frame(instance *objeto, Code_attribute *code_attribute, cp_info *constant_pool) {
 	frame_stack_item *frame_item;
 
 	assert(code_attribute != NULL);

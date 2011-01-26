@@ -23,18 +23,18 @@ int set_locale() {
 	return 1;
 }
 
-u1 *get_ascii(cp_info *info, u2 index) {
-	u2 tamanho = info[index].info.utf8_info.length;
+u1 *get_utf8_string(cp_info *constant_pool, u2 index) {
+	u2 tamanho = constant_pool[index].info.utf8_info.length;
 	u1 *nome = malloc(tamanho+1);
-	nome = memcpy(nome, info[index].info.utf8_info.bytes, tamanho);
+	nome = memcpy(nome, constant_pool[index].info.utf8_info.bytes, tamanho);
 	nome[tamanho] = '\0';
 	return nome;
 }
 
-u1 *get_class(cp_info *info, u2 index) {
-	assert(info != NULL);
+u1 *get_class(cp_info *constant_pool, u2 index) {
+	assert(constant_pool != NULL);
 
-	return get_ascii(info, info[index].info.class_info.name_index);
+	return get_utf8_string(constant_pool, constant_pool[index].info.class_info.name_index);
 }
 
 u1 *get_nome_qualificado(ClassFile *class_file) {
@@ -58,7 +58,11 @@ wchar_t *get_utf8(cp_info *info, u2 index) {
 	return wcs;
 }
 
-u1 *c2f(u1 *classe) {
+/**
+ * Troca / por \\ e adiciona .class o final
+ * @param classe
+ */
+u1 *get_modified_class_name(u1 *classe) {
 	u1 *tmp = calloc(strlen((char *) classe) + 7, sizeof(u1));
 	int i = 0;
 
