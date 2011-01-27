@@ -1,9 +1,4 @@
 /**
- * Alunos:
- *  Rafael Liu     05/23101
- *  Carlos Horita  05/31758
- *  Ana Helena     05/15710
- *
  * Modulo de Impressao
  * - funcoes para impressao das diversas partes da estrutura do
  *   arquivo .class.

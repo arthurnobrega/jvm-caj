@@ -5,11 +5,11 @@
  Software Basico
  Turma A - 02/2007
  
- Rafael Liu Santos 			05/23101
- Thiago de Oliveira Franca	05/24387
- Tulio Conrado Campos		05/24557
- 
- TNTvm
+ Turma A - 02/2010
+
+ Arthur Thiago Barbosa Nobrega 06/31205
+ Julio Cesar Junior 05/34986
+ Renato Carrasco Costa 07/37771
  
  bits.h: define funcoes utilitarias para tratamento de operacoes de baixo nivel 
  como conversao de endianess e bits.
