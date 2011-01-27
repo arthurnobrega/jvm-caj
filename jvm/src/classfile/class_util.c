@@ -3,13 +3,11 @@
  Instituto de Ciencias Exatas
  Departamento de Ciencia da Computacao
  Software Basico
- Turma A - 02/2007
+  Turma A - 02/2010
 
- Rafael Liu Santos 			05/23101
- Thiago de Oliveira Franca	05/24387
- Tulio Conrado Campos		05/24557
-
- TNTvm
+ Arthur Thiago Barbosa Nobrega 06/31205
+ Julio Cesar Junior 05/34986
+ Renato Carrasco Costa 07/37771
 
  class_util.c: fornece funcoes de manipulacao dos dados da estrutura do arquivo .class. 
  */

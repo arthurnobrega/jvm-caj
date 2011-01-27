@@ -3,13 +3,11 @@
  Instituto de Ciencias Exatas
  Departamento de Ciencia da Computacao
  Software Basico
- Turma A - 02/2007
+ Turma A - 02/2010
 
- Rafael Liu Santos 			05/23101
- Thiago de Oliveira Franca	05/24387
- Tulio Conrado Campos		05/24557
-
- TNTvm
+ Arthur Thiago Barbosa Nobrega 06/31205
+ Julio Cesar Junior 05/34986
+ Renato Carrasco Costa 07/37771
 
 stack.c: Implementa as funcoes de manipulacao da pilha de execução e de seus frames.
  */
@@ -91,6 +89,7 @@ void create_frame(instance *objeto, Code_attribute *code_attribute, cp_info *con
 void destroy_frame(int controle) {
 	frame_stack_item *frame_item;
 	u4 return1;
+	u4 return2;
 
 	/* remove frame */
 	frame_item = frame_stack;
@@ -99,7 +98,8 @@ void destroy_frame(int controle) {
 	if (controle == POP1) {
 		return1 = pop();
 	} else if (controle == POP2) {
-		/* vamos implementar double/long? */
+		return1 = pop();
+		return2 = pop();
 	}
 
 	frame_stack = frame_stack->prox;
@@ -107,7 +107,8 @@ void destroy_frame(int controle) {
 	if (controle == POP1) {
 		push(return1);
 	} else if (controle == POP2) {
-		/* vamos implementar double/long? */
+		push(return1);
+		push(return2);
 	}
 
 #ifdef DEBUG
