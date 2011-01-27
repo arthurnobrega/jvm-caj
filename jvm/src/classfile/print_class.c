@@ -23,10 +23,6 @@
 #include "print_class.h"
 #include "class_util.h"
 
-void printf_help() {
-	printf("USO: classview <ARQUIVO>\n");
-}
-
 int printf_Access_Flag(ClassFile class_file){
 	u2 access_flags;
 	access_flags = class_file.access_flags;
@@ -42,7 +38,7 @@ int printf_Access_Flag(ClassFile class_file){
 		printf("interface ");
 	if (is_bit(access_flags, 10))
 		printf("abstract ");
-	printf("]");
+	printf("]\n");
 
 	return OK;
 }
@@ -190,6 +186,7 @@ int printf_Attributes_rec(cp_info *info, attribute_info *attributes, u2 attribut
 		printf("Attributes:\n");
 	} else {
 		ident = malloc(identacao + 1);
+		memcpy(ident, " ", strlen(ident));
 		for (i = 0; i < identacao; i++) {
 			ident[i] = ' ';
 		}
