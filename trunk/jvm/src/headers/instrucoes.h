@@ -14,6 +14,7 @@
 #ifndef INSTRUCOES_H_
 #define INSTRUCOES_H_
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,7 +27,6 @@
  * 
  * com as respectivas macros, assim como definido no manual no GNU C Library.
 */
-#include <math.h>
 #include "../classfile/java.h"
 #include "../classfile/class_struc.h"
 #include "../classfile/class_util.h"

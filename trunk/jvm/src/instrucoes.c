@@ -13,6 +13,7 @@ insturcoes.c: Módulo com a implementação das instruções da Virtual Machine.
  */
 #include "headers/instrucoes.h"
 #include "headers/debug.h"
+#include <math.h>
 
 void init_instructions() {
 	instrucao[0x00] = _nop;
@@ -273,10 +274,8 @@ int execute(heap_element *classe, char *method_name, char *method_desc, int is_s
 		}
 	}
 
-	// Executa as instruções do método
 	while (frame_stack->pc < frame_stack->code_attribute->code_length) {
  		op_code = frame_stack->code_attribute->code[frame_stack->pc];
-// 		printf("Vai executar a função %s\n", func_nome);
 		controle = instrucao[op_code]();
 		if ((controle == POP0)||(controle == POP1)||(controle == POP2)){
 			break;
@@ -371,7 +370,6 @@ void add_multiarray(u4 ** ponteiro, u4 * tamanhos, u4 dimensoes ){
 	}
 	i = tamanhos[dimensoes-1];
 	*ponteiro = (u4 *)malloc(i*sizeof(u4 *));
-	//add_array(*ponteiro, i);
 	for(j = 0; j < i; j++){
 		printf("criado array: %i %i %x\n", i, j, ponteiro);
 		add_multiarray(&(ponteiro[j]), tamanhos, dimensoes-1);
@@ -1396,15 +1394,6 @@ int _imul() {
 	int valor1, valor2;
 	valor1 = (int) pop();
 	valor2 = (int) pop();
-//	if (is_inegative(valor1)) {
-//		valor1 = convert_u4_to_int(valor1);
-//	}
-//
-//	if (is_inegative(valor2)) {
-//		valor2 = convert_u4_to_int(valor2);
-//	}
-//
-//	printf("%d %d\n", (int)valor1, (int)valor2);
 
 	push((u4)(valor1 * valor2));
 	return NORMAL_INST;

@@ -56,4 +56,6 @@ u1 *c2f(u1 *classe);
 
 int count_args(char *args);
 
+u1 *get_modified_class_name(u1 *classe);
+
 #endif

@@ -105,9 +105,7 @@ instance *create_instance(u1 *class_name) {
 
 	/* tenta puxar a classe do heap, se nao tiver carrega */
 	element = get_heap_element(class_name);
-//	if (classe == NULL) {
-//		classe = load_class(class_name);
-//	}
+
 	class_file = element->classe;
 
 	/* cria instancia */
