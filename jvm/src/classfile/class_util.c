@@ -31,16 +31,16 @@ u1 *get_utf8_string(cp_info *constant_pool, u2 index) {
 	return nome;
 }
 
-u1 *get_class(cp_info *constant_pool, u2 index) {
+u1 *get_class_name(cp_info *constant_pool, u2 index) {
 	assert(constant_pool != NULL);
 
 	return get_utf8_string(constant_pool, constant_pool[index].info.class_info.name_index);
 }
 
-u1 *get_nome_qualificado(ClassFile *class_file) {
+u1 *get_class_name_classfile(ClassFile *class_file) {
 	assert(class_file != NULL);
 
-	return get_class(class_file->constant_pool, class_file->this_class);
+	return get_class_name(class_file->constant_pool, class_file->this_class);
 }
 
 wchar_t *get_utf8(cp_info *info, u2 index) {

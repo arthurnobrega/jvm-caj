@@ -44,9 +44,9 @@ heap_element *get_heap_element(u1 *class_name) {
 	assert(class_name != NULL);
 
 	while (tmp != NULL) {
-		if (strcmp((char *) get_nome_qualificado(tmp->classe), (char *) class_name) == 0) {
+		if (strcmp((char *) get_class_name_classfile(tmp->classe), (char *) class_name) == 0) {
 #ifdef DEBUG
-			printf("criar_instancia(): Classe '%s' retornada da heap\n", class_name);
+			printf("get_heap_element(): Classe '%s' retornada da heap\n", class_name);
 #endif
 			return tmp;
 		}
@@ -54,7 +54,7 @@ heap_element *get_heap_element(u1 *class_name) {
 	}
 
 #ifdef DEBUG
-	printf("criar_instancia(): Classe '%s' será carregada na heap\n", class_name);
+	printf("get_heap_element(): Classe '%s' será carregada na heap\n", class_name);
 #endif
 	return load_class(class_name);
 }

@@ -41,13 +41,13 @@ void teste_heap() {
 	if (classe == NULL) {
 		printf("class1: pau (NULL)\n");
 	} else {
-		printf(strcmp(get_nome_qualificado(classe->classe), "classes/Classe1") == 0 ? "classe1: ok\n" : "classe1: pau\n");
+		printf(strcmp(get_class_name_classfile(classe->classe), "classes/Classe1") == 0 ? "classe1: ok\n" : "classe1: pau\n");
 	}
 	classe = get_heap_element("classes/Classe2");
 	if (classe == NULL) {
 		printf("class2: pau (NULL)\n");
 	} else {
-		printf(strcmp(get_nome_qualificado(classe->classe), "classes/Classe2") == 0 ? "classe2: ok\n" : "classe2: pau\n");
+		printf(strcmp(get_class_name_classfile(classe->classe), "classes/Classe2") == 0 ? "classe2: ok\n" : "classe2: pau\n");
 	}
 }
 
@@ -606,7 +606,7 @@ void teste_ultimas_instrucoes() {
 
 void teste_class() {
 	heap_element *classe = get_heap_element("classes/Classe2");
-	printf("%s", get_nome_qualificado(classe->classe));
+	printf("%s", get_class_name_classfile(classe->classe));
 }
 
 void teste() {
