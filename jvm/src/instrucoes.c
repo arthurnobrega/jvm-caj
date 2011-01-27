@@ -219,7 +219,7 @@ void init_instructions() {
 	instrucao[0xc9] = _jsr_w;
 }
 
-int execute(heap_element *classe, char *func_nome, char *func_desc, int estatico) {
+int execute(heap_element *classe, char *method_name, char *method_desc, int is_static) {
 	Code_attribute *code;
 	heap_element *cl = classe;
 	int i, count = 0;
@@ -231,29 +231,32 @@ int execute(heap_element *classe, char *func_nome, char *func_desc, int estatico
 	arrays = NULL;
 
 
-	/* se não tiver o métexecuteodo retorne com erro */
-	code = get_code(&cl, func_nome, func_desc);
+	/* se não tiver o método executando retorne com erro */
+	code = get_code(&cl, method_name, method_desc);
 	if (code == NULL) {
 		return 0;
 	}
 #ifdef DEBUG
-	printf("execute(): executando função %s\n", func_nome);
+	printf("execute(): executando função %s\n", method_name);
 #endif
 
 	/* pega quantidade de argumentos */
-	if (strcmp((char *) func_nome, "main") != 0
-			&& strcmp((char *) func_desc, "([Ljava/lang/String;)V") != 0) {
-		count = contar_args(func_desc);
+	if (strcmp((char *) method_name, "main") != 0
+			&& strcmp((char *) method_desc, "([Ljava/lang/String;)V") != 0) {
+		count = count_args(method_desc);
 	}
 
 	/* dá pops nos argumentos */
 	stack = malloc(count * sizeof(u4));
 	for (i = 0; i < count; i++) {
 		stack[i] = pop();
+#ifdef DEBUG
+		printf("deu pop no argumento %x\n", stack[i]);
+#endif
 	}
 
 	/* pega referência da classe (se não for static) */
-	if (estatico == FALSE) {
+	if (is_static == FALSE) {
 		objref = (instance *) pop();
 	}
 
@@ -263,16 +266,17 @@ int execute(heap_element *classe, char *func_nome, char *func_desc, int estatico
 	/* dá pushs nos argumentos */
 	for (i = 0; i < count; i++) {
 		/* se for objeto pule a primeira variável (this) */
-		if (estatico == TRUE) {
+		if (is_static == TRUE) {
 			frame_stack->variable[count-i-1] = stack[i];
 		} else {
 			frame_stack->variable[count-i] = stack[i];
 		}
 	}
 
+	// Executa as instruções do método
 	while (frame_stack->pc < frame_stack->code_attribute->code_length) {
  		op_code = frame_stack->code_attribute->code[frame_stack->pc];
- 		
+// 		printf("Vai executar a função %s\n", func_nome);
 		controle = instrucao[op_code]();
 		if ((controle == POP0)||(controle == POP1)||(controle == POP2)){
 			break;

@@ -54,6 +54,6 @@ u1 *get_class_name_classfile(ClassFile *class_file);
  */
 u1 *c2f(u1 *classe);
 
-int contar_args(char *args);
+int count_args(char *args);
 
 #endif
