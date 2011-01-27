@@ -43,7 +43,6 @@ int read_constant_pool(FILE *arq, ClassFile *class_file) {
 
 	/* aloca tamanho do array */
 	class_file->constant_pool_count = tamanho;
-	//TODO: Verificar se está correto agora, alterado para (tamanho + 1)
 	class_file->constant_pool = malloc(sizeof(cp_info) * (tamanho + 1));
 
 	/* cria cada elemento do array */
@@ -94,7 +93,7 @@ int read_constant_pool(FILE *arq, ClassFile *class_file) {
 			break;
 
 		default:
-			//TODO: Verificar se para.
+			/*TODO: Verificar se para.*/
 #ifdef DEBUG
 			printf("\nUNDEFINED_FLAG em lerConstantPool %d\n",tag);
 #endif
@@ -185,7 +184,9 @@ int read_attributes_array(FILE *arq, cp_info *constant_pool, attribute_info **at
 	(*attributes) = malloc(sizeof(attribute_info) * attributes_count);
 
 	/* cria cada elemento do array */
+#ifdef DEBUG
 	printf("Attributes count: %d\n",attributes_count);
+#endif
 	for (i = 0; i < attributes_count; i++) {
 		(*attributes)[i].attribute_name_index = fget_u2(arq);
 		(*attributes)[i].attribute_length = fget_u4(arq);

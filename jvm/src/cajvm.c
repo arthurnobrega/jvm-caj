@@ -18,6 +18,7 @@
 #include "headers/heap.h"
 #include "headers/stack.h"
 #include "classfile/java.h"
+#include "classfile/print_class.h"
 #include "headers/class.h"
 #include "headers/debug.h"
 
@@ -41,25 +42,37 @@ int main(int argc, char *argv[]) {
 	init_instructions();
 	init_heap();
 	
-	if (argc != 2) {
-		printf("USO: cajvm [nome qualificado da classe]\n");
+	if (argc < 2) {
+		printf("---------------HELP-----------------");
+		printf("%s [classe]\n", argv[0]);
+		printf("ou\n");
+		printf("%s -classfile [classe]\n", argv[0]);
 		return EXIT_FAILURE;
 	}
 
 	/*pega o nome qualificado da classe para carregamento inicial: carregar a classe em
 	 * memória e executar seu clinit.
 	 */
-	class_name = (u1 *) argv[1];
+	if (argc == 2) {
+		class_name = (u1 *) argv[1];
+	} else if (argc == 3) {
+		class_name = (u1 *) argv[2];
+	}
 	class_file = get_heap_element(class_name);
 	if (class_file == NULL) {
 		printf("Não foi possível carregar a classe");
 		return EXIT_FAILURE;
 	}
+
+	if (argc == 3 && strcmp(argv[1], "-classfile") == 0) {
+		printf_General_Information(*class_file->classe);
+	}
+
 	/*
 	 * executa o init da classe, começando de fato a execução da classe.
 	 */
 	boot(class_file);
-	
+
 	printf("\n\nPressione qualquer tecla para sair...");
 	getchar();
 	
