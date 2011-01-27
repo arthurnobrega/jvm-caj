@@ -76,7 +76,7 @@ u1 *get_modified_class_name(u1 *classe) {
 	return tmp;
 }
 
-int contar_args(char *args) {
+int count_args(char *args) {
 	int i = 0, count = 0;
 	int ref = 0;
 	while (args[++i] != '\0') {
