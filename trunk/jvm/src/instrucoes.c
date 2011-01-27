@@ -371,7 +371,7 @@ void add_multiarray(u4 ** ponteiro, u4 * tamanhos, u4 dimensoes ){
 	i = tamanhos[dimensoes-1];
 	*ponteiro = (u4 *)malloc(i*sizeof(u4 *));
 	for(j = 0; j < i; j++){
-		printf("criado array: %i %i %x\n", i, j, ponteiro);
+		/*printf("criado array: %i %i %x\n", i, j, ponteiro);*/
 		add_multiarray(&(ponteiro[j]), tamanhos, dimensoes-1);
 	}
 }
@@ -1353,7 +1353,7 @@ int _isub() {
 	int valor1, valor2;
 	valor1 = (int) pop();
 	valor2 = (int) pop();
-	push((u4)(valor1 - valor2));
+	push((u4)(valor2 - valor1));
 	return NORMAL_INST;
 }
 
@@ -1441,7 +1441,7 @@ int _idiv() {
 		/*erro - divisão inteira por zero*/
 		exit(DIV_ZERO);
 	}
-	push((u4)(valor1 / valor2));
+	push((u4)(valor2 / valor1));
 	return NORMAL_INST;
 }
 

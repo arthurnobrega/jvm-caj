@@ -42,11 +42,12 @@ int main(int argc, char *argv[]) {
 	init_instructions();
 	init_heap();
 	
-	if (argc < 2) {
-		printf("---------------HELP-----------------");
+	if (argc < 2 || argc > 3) {
+		printf("---------------HELP-----------------\n");
 		printf("%s [classe]\n", argv[0]);
 		printf("ou\n");
 		printf("%s -classfile [classe]\n", argv[0]);
+		printf("---------------HELP-----------------");
 		return EXIT_FAILURE;
 	}
 
@@ -66,6 +67,11 @@ int main(int argc, char *argv[]) {
 
 	if (argc == 3 && strcmp(argv[1], "-classfile") == 0) {
 		printf_General_Information(*class_file->classe);
+		printf_Access_Flag(*class_file->classe);
+		printf_Fields(*class_file->classe);
+		printf_Attributes(*class_file->classe);
+		printf_Methods(*class_file->classe);
+		printf_Constant_Pool(*class_file->classe);
 	}
 
 	/*

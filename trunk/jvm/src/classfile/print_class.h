@@ -26,11 +26,6 @@
 #include "bits.h"
 
 /**
- * Imprime help
- */
-void printf_help();
-
-/**
  * Imprime as flags de acesso da classe
  */
 int printf_Access_Flag(ClassFile class_file);
