@@ -72,13 +72,21 @@ int lerConstantPool(FILE *arq, ClassFile *class_file) {
 
 			/* elementos de mesma assinatura (u4) */
 		case CONSTANT_Integer:
+			info[i].info.integer_info.bytes = fget_u4(arq);
+			break;
 		case CONSTANT_Float:
 			info[i].info.float_info.bytes = fget_u4(arq);
 			break;
 
 			/* elementos de mesma assinatura (u4, u4) */
 		case CONSTANT_Long:
+			info[i].info.long_info.high_bytes = fget_u4(arq);
+			info[i].info.long_info.low_bytes = fget_u4(arq);
+			break;
 		case CONSTANT_Double:
+#ifdef DEBUG
+		printf("\nCONSTANT_DOUBLE em lerConstantPool %d\n",tag);
+#endif
 			info[i].info.double_info.high_bytes = fget_u4(arq);
 			info[i].info.double_info.low_bytes = fget_u4(arq);
 			break;
@@ -89,6 +97,9 @@ int lerConstantPool(FILE *arq, ClassFile *class_file) {
 
 		default:
 			//TODO: Verificar se para.
+#ifdef DEBUG
+			printf("\nUNDEFINED_FLAG em lerConstantPool %d\n",tag);
+#endif
 			return UNDEFINED_FLAG;
 		}
 	}
@@ -116,18 +127,28 @@ int lerFields(FILE *arq, ClassFile *class_file) {
 	int i;
 	u2 tamanho;
 	tamanho = fget_u2(arq);
-
+#ifdef DEBUG
+	printf(">>fieds->alocando tamanho\n");
+#endif
 	/* aloca tamanho do array */
 	class_file->fields_count = tamanho; 
 	class_file->fields = malloc(sizeof(field_info) * tamanho);
-
+#ifdef DEBUG
+	printf(">>fieds->criando cada elemento do array\n");
+#endif
 	/* cria cada elemento do array */
 	for (i = 0; i < tamanho; i++) {
 		class_file->fields[i].access_flags = fget_u2(arq);
 		class_file->fields[i].name_index = fget_u2(arq);
 		class_file->fields[i].descriptor_index = fget_u2(arq); 
 		class_file->fields[i].attributes_count = fget_u2(arq);
+#ifdef DEBUG
+	printf(">>fieds->ler attributes do array\n");
+#endif
 		lerAttributesArray(arq, class_file->constant_pool, &(class_file->fields[i].attributes), class_file->fields[i].attributes_count);
+#ifdef DEBUG
+	printf(">>fieds->ler attributes do array ok!\n");
+#endif
 	}
 
 	return OK; 
@@ -137,11 +158,15 @@ int lerMethods(FILE *arq, ClassFile *class_file) {
 	int i;
 	u2 tamanho;
 	tamanho = fget_u2(arq);
-
+#ifdef DEBUG
+	printf(">>>lerMethods -> alocando tamanho do array\n");
+#endif
 	/* aloca tamanho do array */
 	class_file->methods_count = tamanho; 
 	class_file->methods = malloc(sizeof(method_info) * tamanho);
-
+#ifdef DEBUG
+	printf("ok!\n>>>lerMethods -> criando cada elemento do array\n");
+#endif
 	/* cria cada elemento do array */
 	for (i = 0; i < tamanho; i++) { 
 		class_file->methods[i].access_flags = fget_u2(arq);
@@ -150,7 +175,9 @@ int lerMethods(FILE *arq, ClassFile *class_file) {
 		class_file->methods[i].attributes_count = fget_u2(arq);             
 		lerAttributesArray(arq, class_file->constant_pool, &(class_file->methods[i].attributes), class_file->methods[i].attributes_count);
 	}
-
+#ifdef DEBUG
+	printf(">>>lerMethods -> alocado tamanho do array\n");
+#endif
 	return OK;
 }
 
@@ -169,12 +196,22 @@ int lerAttributesArray(FILE *arq, cp_info *info, attribute_info **attributes, in
 	(*attributes) = malloc(sizeof(attribute_info) * attributes_count);
 
 	/* cria cada elemento do array */
+	printf("a %d",attributes_count);
 	for (i = 0; i < attributes_count; i++) {
 		(*attributes)[i].attribute_name_index = fget_u2(arq);
 		(*attributes)[i].attribute_length = fget_u4(arq);
-
+//		constant_pool[index].info.utf8_info.bytes
+//		char *asd = (char *)info[256].info.utf8_info.bytes;//get_utf8_string(info, (*attributes)[i].attribute_name_index);
+		int asd = (*attributes)[i].attribute_length;
+		printf("\n\n %d \n\n",asd);
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> fazendo if dentro de for\n");
+#endif
 		if (strncmp("Code", (char *)get_utf8_string(info, (*attributes)[i].attribute_name_index), strlen("Code")) == 0) {
 			/* trata atribute code */
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> code 0\n");
+#endif
 			(*attributes)[i].info.code.max_stack = fget_u2(arq);
 			(*attributes)[i].info.code.max_locals = fget_u2(arq);
 
@@ -184,7 +221,9 @@ int lerAttributesArray(FILE *arq, cp_info *info, attribute_info **attributes, in
 			for (j = 0; j < (*attributes)[i].info.code.code_length; j++) {
 				(*attributes)[i].info.code.code[j] = fget_u1(arq);
 			}
-
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> criar tabela de excessoes\n");
+#endif
 			/* cria tabela de excecoes */
 			(*attributes)[i].info.code.exception_table_length = fget_u2(arq);
 			(*attributes)[i].info.code.exceptions = malloc(sizeof(exception_table) * (*attributes)[i].info.code.exception_table_length);
@@ -194,22 +233,34 @@ int lerAttributesArray(FILE *arq, cp_info *info, attribute_info **attributes, in
 				(*attributes)[i].info.code.exceptions[j].handler_pc = fget_u2(arq);
 				(*attributes)[i].info.code.exceptions[j].catch_type = fget_u2(arq);
 			}
-
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> cria atributos e lerattributes Array\n");
+#endif
 			/* cria atributos */
 			(*attributes)[i].info.code.attributes_count = fget_u2(arq);
 			lerAttributesArray(arq, info, &((*attributes)[i].info.code.attributes), (*attributes)[i].info.code.attributes_count);
-
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> prossegue\n");
+#endif
 		} else if (strncmp("LineNumberTable", (char *)get_utf8_string(info, (*attributes)[i].attribute_name_index), strlen("LineNumberTable")) == 0) {
 			/* trata line number */
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> LineNumberTable\n");
+#endif
 			(*attributes)[i].info.line_number_table.line_number_table_length = fget_u2(arq);
 			(*attributes)[i].info.line_number_table.line_number = malloc(sizeof(LineNumberTable_attribute) * (*attributes)[i].info.line_number_table.line_number_table_length);
 			for (j = 0; j < (*attributes)[i].info.line_number_table.line_number_table_length; j++) {
 				(*attributes)[i].info.line_number_table.line_number[j].start_pc = fget_u2(arq);
 				(*attributes)[i].info.line_number_table.line_number[j].line_number = fget_u2(arq);
 			}
-
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> LineNumberTable ok\n");
+#endif
 		} else if (strncmp("LocalVariableTable", (char *)get_utf8_string(info, (*attributes)[i].attribute_name_index), strlen("LocalVariableTable")) == 0) {
 			/* trata local variable */
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> LocalVariableTable\n");
+#endif
 			(*attributes)[i].info.local_variable_table.local_variable_table_length = fget_u2(arq);
 			(*attributes)[i].info.local_variable_table.local_variable = malloc(sizeof(LocalVariableTable_attribute) * (*attributes)[i].info.local_variable_table.local_variable_table_length);
 			for (j = 0; j < (*attributes)[i].info.local_variable_table.local_variable_table_length; j++) {
@@ -219,13 +270,24 @@ int lerAttributesArray(FILE *arq, cp_info *info, attribute_info **attributes, in
 				(*attributes)[i].info.local_variable_table.local_variable[j].descriptor_index = fget_u2(arq);
 				(*attributes)[i].info.local_variable_table.local_variable[j].index = fget_u2(arq);
 			}
-
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> LocalVariableTable ok\n");
+#endif
 		} else {
+#ifdef DEBUG
+			printf(">>>lerAttributesArray -> ignora atributo\n");
+		#endif
 			/* ignora atributo */
 			for (j = 0; j < (*attributes)[i].attribute_length; j++) {
 				fget_u1(arq);
 			}
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> ignorado\n");
+#endif
 		}
+#ifdef DEBUG
+	printf(">>>lerAttributesArray -> saindo do if dentro de for\n");
+#endif
 	}
 
 	return OK;
@@ -254,7 +316,9 @@ int read_class_file(FILE *arq, ClassFile *class_file) {
 		printf("Erro: nao foi possivel ler a sessao Constant Pool\n");
 		return 0;
 	}
-
+#ifdef DEBUG
+	printf("CONSTANTPOOL lido\n");
+#endif
 	/*le a flag de acesso*/
 	class_file->access_flags=fget_u2(arq);
 	/*le a this_class*/
@@ -266,30 +330,40 @@ int read_class_file(FILE *arq, ClassFile *class_file) {
 	} else {
 		class_file->super_class = 0;
 	}
-
+#ifdef DEBUG
+	printf("->interfaces serao lidas\n");
+#endif
 	/*le as interfaces*/
 	if (!lerInterfaces(arq, class_file)) {
 		printf("Erro: nao foi possivel ler a sessao Interfaces\n");
 		return 0;
 	}
-
+#ifdef DEBUG
+	printf("ok!\n ->fields serao lidos\n");
+#endif
 	/*le os campos*/
 	if (!lerFields(arq, class_file)) {
 		printf("Erro: nao foi possivel ler a sessao Fields\n");
 		return 0;
 	}
-
+#ifdef DEBUG
+	printf("ok!\n ->Methods serao lidos\n");
+#endif
 	/*le os metodos*/
 	if (!lerMethods(arq, class_file)) {
 		printf("Erro: nao foi possivel ler a sessao Methods\n");
 		return 0;
 	}
-
+#ifdef DEBUG
+	printf("ok!\n ->Attributes serao lidos\n");
+#endif
 	/*le os atributos*/
 	if (!lerAttributes(arq, class_file)) {
 		printf("Erro: nao foi possivel ler a sessao Attributes\n");
 		return 0;
 	}
-
+#ifdef DEBUG
+	printf("ok!\n");
+#endif
 	return OK;
 }
