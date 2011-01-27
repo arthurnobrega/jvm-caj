@@ -238,6 +238,9 @@ int execute(heap_element *classe, char *func_nome, char *func_desc, int estatico
 	if (code == NULL) {
 		return 0;
 	}
+#ifdef DEBUG
+	printf("execute(): executando função %s\n", func_nome);
+#endif
 
 	/* pega quantidade de argumentos */
 	if (strcmp((char *) func_nome, "main") != 0
@@ -305,7 +308,7 @@ void invoke(int estatico) {
 
 	/* se for da classe java/io/PrintStream, intervenha com um stub */
 	index = info[branch].info.fieldref_info.class_index;
-	class_name = get_class(info, index);
+	class_name = get_class_name(info, index);
 
 	/* pega nome da função */
 	index = info[branch].info.fieldref_info.name_and_type_index;
@@ -2308,7 +2311,7 @@ int _getstatic() {
 
 	/* retorna o nome da classe */
 	u2 index = frame_stack->constant_pool[branch].info.fieldref_info.class_index;
-	u1 *class_name = get_class(frame_stack->constant_pool, index);
+	u1 *class_name = get_class_name(frame_stack->constant_pool, index);
 	if (strcmp((char *) class_name, "java/lang/System") == 0) {
 		/* se for da classe System ignore. trataremos com stubs as suas chamadas */
 		return NORMAL_INST;
@@ -2330,7 +2333,7 @@ int _putstatic() {
 
 	/* retorna o nome da classe */
 	u2 index = frame_stack->constant_pool[branch].info.fieldref_info.class_index;
-	u1 *class_name = get_class(frame_stack->constant_pool, index);
+	u1 *class_name = get_class_name(frame_stack->constant_pool, index);
 	heap_element *classe = get_heap_element(class_name);
 
 	u4 valor = pop();
@@ -2405,7 +2408,7 @@ int _new() {
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
 	u2 branch = carrega_branch();
-	u1 *class_name = get_class(frame_stack->constant_pool, branch);
+	u1 *class_name = get_class_name(frame_stack->constant_pool, branch);
 	instance *objref = create_instance(class_name);
 
 	push((u4) objref);

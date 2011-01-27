@@ -43,7 +43,7 @@ Code_attribute *get_code(heap_element **classe, char *nome, char *desc) {
 	}
 
 #ifdef DEBUG
-	printf("Metodo não encontrado\n");
+	printf("get_code(%s): Metodo nao encontrado\n", nome);
 #endif
 
 	return NULL;
@@ -94,13 +94,13 @@ instance *create_instance(u1 *class_name) {
 	assert(class_name != NULL);
 
 #ifdef DEBUG
-	printf("criar_instancia(): Criando instancia da classe '%s'\n", class_name);
+	printf("create_instance(): Criando instancia da classe '%s'\n", class_name);
 #endif
 
 	/* se o super for Object nao instancie */
 	if (strcmp((char *) class_name, OBJECT_CLASS) == 0) {
 #ifdef DEBUG
-		printf("criar_instancia(): superclasse = Object\n");
+		printf("create_instance(): superclasse = Object\n");
 #endif
 		return NULL;
 	}
@@ -115,9 +115,9 @@ instance *create_instance(u1 *class_name) {
 	/* cria instancia */
 	objeto = (instance *) malloc(sizeof(instance));
 	objeto->nome_qualificado = class_name;
-	super = get_class(class_file->constant_pool, class_file->super_class);
+	super = get_class_name(class_file->constant_pool, class_file->super_class);
 #ifdef DEBUG
-	printf("criar_instancia(): superclasse = '%s'\n", super);
+	printf("create_instance(): superclasse = '%s'\n", super);
 #endif
 	objeto->super = create_instance(super);
 	objeto->fields_count = class_file->fields_count;
@@ -182,9 +182,7 @@ heap_element *load_class(u1 *class_name) {
 	 * controle de estruturas em runtime
 	 * */
 #ifdef DEBUG
-	printf("CLASSE CARREGADA:\n");
 	printf_General_Information(*class_file);
-	printf("\n---------------\n");
 #endif
 
 	return classe;

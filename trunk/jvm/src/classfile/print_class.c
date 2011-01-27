@@ -11,6 +11,7 @@
  * Assertivas de entrada: estrutura valida.
 **/
 #include "print_class.h"
+#include "class_util.h"
 
 void printf_help() {
 	printf("USO: classview <ARQUIVO>\n");
@@ -20,7 +21,7 @@ int printf_Access_Flag(ClassFile class_file){
 	u2 access_flags;
 	access_flags = class_file.access_flags;
 
-	printf("Access Flags: 0x%X [ ", access_flags); 
+	printf("Access Flags: 0x%X [ ", access_flags);
 	if (is_bit(access_flags, 0))
 		printf("public ");
 	if (is_bit(access_flags, 4))
@@ -36,10 +37,13 @@ int printf_Access_Flag(ClassFile class_file){
 	return OK;
 }
 
-int printf_General_Information(ClassFile class_file){
+int printf_General_Information(ClassFile class_file) {
 	cp_info *info;
+	u1* class_name = get_class_name_classfile(&class_file);
 	info = class_file.constant_pool;
-
+	printf("\n\n----------------------------------------------\n");
+	printf("INFORMACOES DO CLASSFILE DA CLASSE '%s' \n",class_name);
+	printf("----------------------------------------------\n");
 	printf("Magic: 0x%X\n", class_file.magic);
 	printf("Minor Version: %i\n", class_file.minor_version);
 	printf("Major Version: %i\n", class_file.major_version);
@@ -52,6 +56,7 @@ int printf_General_Information(ClassFile class_file){
 	printf("Interfaces Count: %i\n",class_file.interfaces_count);
 	printf("Fields Count: %d\n",class_file.fields_count);
 	printf("Methods Count: %d\n",class_file.methods_count);
+	printf("----------------------------------------------\n\n");
 
 	return OK;
 }
