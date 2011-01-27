@@ -3,7 +3,6 @@
  Instituto de Ciencias Exatas
  Departamento de Ciencia da Computacao
  Software Basico
- Turma A - 02/2007
  
  Turma A - 02/2010
 
