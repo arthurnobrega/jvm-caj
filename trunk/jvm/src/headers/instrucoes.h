@@ -74,7 +74,7 @@ void invoke(int estatico);
 /**
  * Pega parametros e cria o offset
  */
-u2 carrega_branch();
+u4 carrega_branch();
 
 /* 
  * A próxima função é utilizada para implementar a instrução multianewarray
