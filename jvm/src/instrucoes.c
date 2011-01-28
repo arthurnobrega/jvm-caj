@@ -536,15 +536,28 @@ int _dconst_1() {
 
 int _bipush() {
 	u1 byte;
+	u4 signal;
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
 	frame_stack->pc++;
 	byte = frame_stack->code_attribute->code[frame_stack->pc];
+
+	if((u4)byte >128){
+
+		byte = ~((u1)byte)+(u1)1;
+
+		signal = ~byte+1;
+		push(signal);
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", byte);
+	printf("Elemento inserido na pilha: %d \n",signal);
 #endif
-	push((u4)byte);
+	}else{
+		push((u4)byte);
+#ifdef DEBUG
+	printf("Elemento inserido na pilha: %d \n",byte);
+#endif
+	}
 	return NORMAL_INST;
 }
 
