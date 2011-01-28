@@ -353,13 +353,24 @@ void invoke(int estatico) {
  * sub-rotina para encontrar o endereco de branch extraindo os dois branchbytes
  * do code
  * */
-u2 carrega_branch() {
-	u2 b1, b2;
+u4 carrega_branch() {
+	u1 b1, b2;
 
+	u2 signal;
+	int retorno;
 	frame_stack->pc++;
-	b1 = (u2)frame_stack->code_attribute->code[frame_stack->pc];
+	//b0 = frame_stack->code_attribute->code[frame_stack->pc];
+	b1 = frame_stack->code_attribute->code[frame_stack->pc];
 	frame_stack->pc++;
-	b2 = (u2)frame_stack->code_attribute->code[frame_stack->pc];
+	b2 = frame_stack->code_attribute->code[frame_stack->pc];
+	signal = (b1>>7);
+	if(signal){
+
+		signal = ((b1<<8)|b2);
+		retorno = 0xFFFF0000 |signal;
+
+		return retorno;
+	}
 	return ((b1<<8)|b2);
 }
 
@@ -562,7 +573,7 @@ int _bipush() {
 }
 
 int _sipush() {
-	u2 valor;
+	u4 valor;
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
