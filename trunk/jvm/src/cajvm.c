@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 	 */
 	boot(class_file);
 
-	printf("\n\nPressione qualquer tecla para sair...");
+	printf("\n\nPressione <ENTER> para sair...");
 	getchar();
 	
 	/*compilacao condicional para testes..*/
