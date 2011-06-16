@@ -15,6 +15,7 @@ Grupo: 3
 Resumo: 100
 
 (s) arrays simples
+
 (s) array.length
 (---+) inteiros: 8 bits negativo nao e' representado corretamente. Extraem os operadores da pilha em ordem invertida (subtracao, divisao, deslocamentos)! Conversao para log e double 
 (---+) floats: erro no módulo, conversao para long ou double, relacionais
