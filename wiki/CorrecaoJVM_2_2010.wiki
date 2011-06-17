@@ -34,43 +34,45 @@ Resumo: 100
 
 (s) array.length
 
-(---+) inteiros: 8 bits negativo nao e' representado corretamente. Extraem os operadores da pilha em ordem invertida (subtracao, divisao, deslocamentos)! Conversao para log e double 
+(s) inteiros: 8 bits negativo nao e' representado corretamente. Extraem os operadores da pilha em ordem invertida (subtracao, divisao, deslocamentos)! Conversao para log e double 
 
-(---+) floats: erro no módulo, conversao para long ou double, relacionais
+(s) floats: erro no módulo, conversao para long ou double, relacionais
 
-() desvios com cat 1 
+(n) desvios com cat 1 
 
-() recursao
+(s) recursao
 
-() metodos estaticos:  
+(s) metodos estaticos:  
 
-() operacoes de retorno
+(s) operacoes de retorno
 
-() operacoes logicas com cat 1  
+(s) operacoes logicas com cat 1  
 
-() operacoes de deslocamento com cat 1 
+(n) operacoes de deslocamento com cat 1 
 
 () operacoes de manipulacao de pilha
 
-() arrays multidimensionais
+(n) arrays multidimensionais
 
 () arrays de referencia
 
-() objetos: erro para construtor com argumentos
+(s) objetos: erro para construtor com argumentos
 
-() metodos nao estaticos: erro em polimorfismo
+(s) metodos nao estaticos: erro em polimorfismo
 
 (n) long(n) e double (n)
 
-() operacoes aritmeticas de cat 2 
+(n) operacoes aritmeticas de cat 2 
 
-() operacoes de deslocamento de longs
+(n) operacoes de deslocamento de longs
 
-() system.out.println (int, float, string e booleano): 
+(s) system.out.println (int, string e booleano):
+
+(n) system.out.println (float)
 
 () conversao de e para cat 2
 
-() strings
+(s) strings
 
 () interfaces
 
