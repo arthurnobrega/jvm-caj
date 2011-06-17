@@ -74,7 +74,7 @@ Resumo: 100
 
 (s) strings
 
-() interfaces
+(s) interfaces
 
 () threads
 
