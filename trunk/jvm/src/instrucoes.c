@@ -2677,9 +2677,11 @@ int _newarray() {
 		vetor = (float *) calloc(tamanho,sizeof(float));
 		break;
 	case T_LONG:
+		vetor = (long long int *) calloc(tamanho,sizeof(long long int));
+		break;
 	case T_DOUBLE:
-		/*Não implementado.*/
-		return NAO_IMP;
+		vetor = (double *) calloc(tamanho,sizeof(double));
+		break;
 	default:
 		printf("newarray(%d): Tipo de array inválido!!!!",frame_stack->pc);
 		exit(EXIT_FAILURE);
