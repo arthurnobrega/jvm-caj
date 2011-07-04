@@ -2505,8 +2505,10 @@ int _ireturn() {
 }
 
 int _lreturn() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	return POP2;
 }
 
 int _freturn() {
@@ -2517,8 +2519,10 @@ int _freturn() {
 }
 
 int _dreturn() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	return POP2;
 }
 
 int _areturn() {
