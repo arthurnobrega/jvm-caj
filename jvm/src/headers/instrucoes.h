@@ -52,6 +52,15 @@ typedef struct classe_carregada_struct classe_carregada3;
 #define T_INT 10
 #define T_LONG 11
 
+/**
+ * union para facilitar a manipulacao de doubles
+ * */
+union u_double
+{
+    double  dbl;
+    char    data[sizeof(double)];
+};
+
 
 /**
  * Vetor de instruções

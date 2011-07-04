@@ -1717,8 +1717,19 @@ int _iinc() {
 }
 
 int _i2l() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	int i;
+	u4 aux;
+	long long int retorno;
+	i = pop();
+
+	retorno = (long long int) i;
+
+	aux = retorno&0x0000FFFF;
+	push((u4)aux);
+	aux = retorno>>32;
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _i2f() {
@@ -1738,23 +1749,68 @@ int _i2f() {
 }
 
 int _i2d() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	int i;
+	u4 aux;
+	double retorno;
+	union u_double auxD;
+	i = pop();
+
+	retorno = (double) i;
+
+	auxD.dbl = retorno;
+
+	aux = ((auxD.data[0]&0x00ff)<<24)|((auxD.data[1]&0x00ff)<<16)|((auxD.data[2]&0x00ff)<<8)|((auxD.data[3]&0x00ff));
+	push((u4)aux);
+	aux = ((auxD.data[4]&0x00ff)<<24)|((auxD.data[5]&0x00ff)<<16)|((auxD.data[6]&0x00ff)<<8)|((auxD.data[7]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _l2i() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1;
+	u4 aux, retorno;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	retorno = (int) l1;
+
+	push((u4)retorno);
+	return NORMAL_INST;
 }
 
 int _l2f() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1;
+	u4 aux, retorno;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	retorno = (float) l1;
+
+	push((u4)retorno);
+	return NORMAL_INST;
 }
 
 int _l2d() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1;
+	u4 aux;
+	double retorno;
+	union u_double auxD;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	retorno = (double) l1;
+	auxD.dbl = retorno;
+
+	aux = ((auxD.data[0]&0x00ff)<<24)|((auxD.data[1]&0x00ff)<<16)|((auxD.data[2]&0x00ff)<<8)|((auxD.data[3]&0x00ff));
+	push((u4)aux);
+	aux = ((auxD.data[4]&0x00ff)<<24)|((auxD.data[5]&0x00ff)<<16)|((auxD.data[6]&0x00ff)<<8)|((auxD.data[7]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _f2i() {
@@ -1780,28 +1836,104 @@ int _f2i() {
 }
 
 int _f2l() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	float f1;
+	u4 aux;
+	long long int retorno;
+	f1 = pop();
+
+	retorno = (long long int) f1;
+
+	aux = retorno&0x0000FFFF;
+	push((u4)aux);
+	aux = retorno>>32;
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _f2d() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	float f1;
+	u4 aux;
+	double retorno;
+	union u_double auxD;
+	f1 = pop();
+
+	retorno = (double) f1;
+	auxD.dbl = retorno;
+
+	aux = ((auxD.data[0]&0x00ff)<<24)|((auxD.data[1]&0x00ff)<<16)|((auxD.data[2]&0x00ff)<<8)|((auxD.data[3]&0x00ff));
+
+	push((u4)aux);
+	aux = ((auxD.data[4]&0x00ff)<<24)|((auxD.data[5]&0x00ff)<<16)|((auxD.data[6]&0x00ff)<<8)|((auxD.data[7]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _d2i() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1;
+	u4 aux,retorno;
+	aux = pop();
+	d1.data[0] = (aux&0xFF000000)>>24;
+	d1.data[1] = (aux&0x00FF0000)>>16;
+	d1.data[2] = (aux&0x0000FF00)>>8;
+	d1.data[3] = (aux&0x000000FF);
+	aux = pop();
+	d1.data[4] = (aux&0xFF000000)>>24;
+	d1.data[5] = (aux&0x00FF0000)>>16;
+	d1.data[6] = (aux&0x0000FF00)>>8;
+	d1.data[7] = (aux&0x000000FF);
+
+	retorno = (int) d1.dbl;
+
+	push((u4)retorno);
+	return NORMAL_INST;
 }
 
 int _d2l() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1;
+	u4 aux;
+	aux = pop();
+	d1.data[0] = (aux&0xFF000000)>>24;
+	d1.data[1] = (aux&0x00FF0000)>>16;
+	d1.data[2] = (aux&0x0000FF00)>>8;
+	d1.data[3] = (aux&0x000000FF);
+	aux = pop();
+	d1.data[4] = (aux&0xFF000000)>>24;
+	d1.data[5] = (aux&0x00FF0000)>>16;
+	d1.data[6] = (aux&0x0000FF00)>>8;
+	d1.data[7] = (aux&0x000000FF);
+
+	long long int retorno;
+
+	retorno = (long long int) d1.dbl;
+
+	aux = retorno&0x0000FFFF;
+	push((u4)aux);
+	aux = retorno>>32;
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _d2f() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1;
+	u4 aux, retorno;
+	aux = pop();
+	d1.data[0] = (aux&0xFF000000)>>24;
+	d1.data[1] = (aux&0x00FF0000)>>16;
+	d1.data[2] = (aux&0x0000FF00)>>8;
+	d1.data[3] = (aux&0x000000FF);
+	aux = pop();
+	d1.data[4] = (aux&0xFF000000)>>24;
+	d1.data[5] = (aux&0x00FF0000)>>16;
+	d1.data[6] = (aux&0x0000FF00)>>8;
+	d1.data[7] = (aux&0x000000FF);
+
+	retorno = (float) d1.dbl;
+
+	push((u4)retorno);
+	return NORMAL_INST;
 }
 
 int _i2b() {
@@ -1847,8 +1979,22 @@ int _i2s() {
 }
 
 int _lcmp() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1,l2,aux;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	l2 = pop();
+	aux = pop();
+	l2 = (l2<<32)|aux;
+
+	if (l1 > l2)
+		push(-1);
+	else if (l1 < l2)
+		push(1);
+	else
+		push(0);
+	return NORMAL_INST;
 }
 
 /*
@@ -1912,13 +2058,87 @@ int _fcmpg() {
 }
 
 int _dcmpl() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1,d2;
+		u4 aux;
+
+		aux = pop();
+	    d1.data[0] = (aux&0xFF000000)>>24;
+	    d1.data[1] = (aux&0x00FF0000)>>16;
+	    d1.data[2] = (aux&0x0000FF00)>>8;
+	    d1.data[3] = (aux&0x000000FF);
+
+		aux = pop();
+	    d1.data[4] = (aux&0xFF000000)>>24;
+	    d1.data[5] = (aux&0x00FF0000)>>16;
+	    d1.data[6] = (aux&0x0000FF00)>>8;
+	    d1.data[7] = (aux&0x000000FF);
+
+	    aux = pop();
+		d2.data[0] = (aux&0xFF000000)>>24;
+		d2.data[1] = (aux&0x00FF0000)>>16;
+		d2.data[2] = (aux&0x0000FF00)>>8;
+		d2.data[3] = (aux&0x000000FF);
+
+		aux = pop();
+		d2.data[4] = (aux&0xFF000000)>>24;
+		d2.data[5] = (aux&0x00FF0000)>>16;
+		d2.data[6] = (aux&0x0000FF00)>>8;
+		d2.data[7] = (aux&0x000000FF);
+
+		if((isnan(d1.dbl) == 0)||(isnan(d2.dbl) == 0)){
+				push(-1);/*NaN*/
+				return NORMAL_INST;
+			}
+		if(d1.dbl == d2.dbl){
+			push(0);
+		}else if(d2.dbl>d1.dbl){
+			push(1);
+		}else if(d2.dbl<d1.dbl){
+			push(-1);
+		}
+		return NORMAL_INST;
 }
 
 int _dcmpg() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1,d2;
+	u4 aux;
+
+	aux = pop();
+    d1.data[0] = (aux&0xFF000000)>>24;
+    d1.data[1] = (aux&0x00FF0000)>>16;
+    d1.data[2] = (aux&0x0000FF00)>>8;
+    d1.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+    d1.data[4] = (aux&0xFF000000)>>24;
+    d1.data[5] = (aux&0x00FF0000)>>16;
+    d1.data[6] = (aux&0x0000FF00)>>8;
+    d1.data[7] = (aux&0x000000FF);
+
+    aux = pop();
+	d2.data[0] = (aux&0xFF000000)>>24;
+	d2.data[1] = (aux&0x00FF0000)>>16;
+	d2.data[2] = (aux&0x0000FF00)>>8;
+	d2.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[4] = (aux&0xFF000000)>>24;
+	d2.data[5] = (aux&0x00FF0000)>>16;
+	d2.data[6] = (aux&0x0000FF00)>>8;
+	d2.data[7] = (aux&0x000000FF);
+
+	if((isnan(d1.dbl) == 0)||(isnan(d2.dbl) == 0)){
+			push(1);/*NaN*/
+			return NORMAL_INST;
+		}
+	if(d1.dbl == d2.dbl){
+		push(0);
+	}else if(d2.dbl>d1.dbl){
+		push(1);
+	}else if(d2.dbl<d1.dbl){
+		push(-1);
+	}
+	return NORMAL_INST;
 }
 
 int _ifeq() {
@@ -2413,10 +2633,7 @@ int _invokeinterface() {
 	return NAO_IMP;
 }
 
-/*int _xxxunusedxxx1() {
-	printf("porn instruction");
-	return NORMAL_INST;
-}*/
+
 
 int _new() {
 #ifdef DEBUG
