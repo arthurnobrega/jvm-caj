@@ -1512,8 +1512,22 @@ int _irem() {
 }
 
 int _lrem() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1,l2,retorno;
+
+	u4 aux;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	l2 = pop();
+	aux = pop();
+	l2 = (l2<<32)|aux;
+
+	retorno = fmodl(l1,l2);
+	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno>>32));
+
+	return NORMAL_INST;
 }
 
 int _frem() {
@@ -1537,8 +1551,37 @@ int _frem() {
 }
 
 int _drem() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1,d2,retorno;
+	u4 aux;
+	aux = pop();
+	d1.data[0] = (aux&0xFF000000)>>24;
+	d1.data[1] = (aux&0x00FF0000)>>16;
+	d1.data[2] = (aux&0x0000FF00)>>8;
+	d1.data[3] = (aux&0x000000FF);
+	aux = pop();
+	d1.data[4] = (aux&0xFF000000)>>24;
+	d1.data[5] = (aux&0x00FF0000)>>16;
+	d1.data[6] = (aux&0x0000FF00)>>8;
+	d1.data[7] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[0] = (aux&0xFF000000)>>24;
+	d2.data[1] = (aux&0x00FF0000)>>16;
+	d2.data[2] = (aux&0x0000FF00)>>8;
+	d2.data[3] = (aux&0x000000FF);
+	aux = pop();
+	d2.data[4] = (aux&0xFF000000)>>24;
+	d2.data[5] = (aux&0x00FF0000)>>16;
+	d2.data[6] = (aux&0x0000FF00)>>8;
+	d2.data[7] = (aux&0x000000FF);
+
+	retorno.dbl = fmod(d1.dbl,d2.dbl);/*d2.dbl -((int)(d2.dbl/d1.dbl))*d1.dbl;*/
+
+	aux = ((retorno.data[3]&0x00ff)<<24)|((retorno.data[2]&0x00ff)<<16)|((retorno.data[1]&0x00ff)<<8)|((retorno.data[0]&0x00ff));
+	push((u4)aux);
+	aux = ((retorno.data[7]&0x00ff)<<24)|((retorno.data[6]&0x00ff)<<16)|((retorno.data[5]&0x00ff)<<8)|((retorno.data[4]&0x00ff));
+	push((u4)aux);
+	return NORMAL_INST;
 }
 
 int _ineg() {
@@ -1549,11 +1592,22 @@ int _ineg() {
 	valor = (int) pop();
 	push((u4)(~valor + 1));
 	return NORMAL_INST;
+
 }
 
 int _lneg() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1,retorno;
+
+	u4 aux;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	retorno = -1*l1;
+	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno>>32));
+
+	return NORMAL_INST;
 }
 
 int _fneg() {
@@ -1575,8 +1629,26 @@ int _fneg() {
 }
 
 int _dneg() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1,retorno;
+	u4 aux;
+	aux = pop();
+	d1.data[0] = (aux&0xFF000000)>>24;
+	d1.data[1] = (aux&0x00FF0000)>>16;
+	d1.data[2] = (aux&0x0000FF00)>>8;
+	d1.data[3] = (aux&0x000000FF);
+	aux = pop();
+	d1.data[4] = (aux&0xFF000000)>>24;
+	d1.data[5] = (aux&0x00FF0000)>>16;
+	d1.data[6] = (aux&0x0000FF00)>>8;
+	d1.data[7] = (aux&0x000000FF);
+
+	retorno.dbl = -1*d1.dbl;
+
+	aux = ((retorno.data[3]&0x00ff)<<24)|((retorno.data[2]&0x00ff)<<16)|((retorno.data[1]&0x00ff)<<8)|((retorno.data[0]&0x00ff));
+	push((u4)aux);
+	aux = ((retorno.data[7]&0x00ff)<<24)|((retorno.data[6]&0x00ff)<<16)|((retorno.data[5]&0x00ff)<<8)|((retorno.data[4]&0x00ff));
+	push((u4)aux);
+	return NORMAL_INST;
 }
 
 int _ishl() {
@@ -1595,8 +1667,20 @@ int _ishl() {
 }
 
 int _lshl() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1,retorno;
+	int i;
+	i = pop();
+	i &= MASK_SHIFT;
+	u4 aux;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	retorno = l1<<i;
+	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno>>32));
+
+	return NORMAL_INST;
 }
 
 int _ishr() {
@@ -1615,8 +1699,20 @@ int _ishr() {
 }
 
 int _lshr() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1,retorno;
+	int i;
+	i = pop();
+	i &= MASK_SHIFT;
+	u4 aux, retorno;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	retorno = l1>>i;
+	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno>>32));
+
+	return NORMAL_INST;
 }
 
 int _iushr() {
@@ -1644,8 +1740,20 @@ int _iushr() {
 }
 
 int _lushr() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1,retorno;
+	int i;
+	i = pop();
+	i &= MASK_SHIFT;
+	u4 aux, retorno;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	retorno = l1>>i;
+	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno>>32));
+
+	return NORMAL_INST;
 }
 
 int _iand() {
@@ -1661,8 +1769,22 @@ int _iand() {
 }
 
 int _land() {
-	/*Não implementado.*/
-	return NAO_IMP;
+
+	long long int l1, l2,retorno;
+	u4 aux, retorno;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	l2 = pop();
+	aux = pop();
+	l2 = (l2<<32)|aux;
+
+	retorno = l1&l2;
+	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno>>32));
+
+	return NORMAL_INST;
 }
 
 int _ior() {
@@ -1678,8 +1800,21 @@ int _ior() {
 }
 
 int _lor() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1, l2,retorno;
+	u4 aux, retorno;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	l2 = pop();
+	aux = pop();
+	l2 = (l2<<32)|aux;
+
+	retorno = l1|l2;
+	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno>>32));
+
+	return NORMAL_INST;
 }
 
 int _ixor() {
@@ -1695,8 +1830,22 @@ int _ixor() {
 }
 
 int _lxor() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1, l2,retorno;
+	u4 aux, retorno;
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	l2 = pop();
+	aux = pop();
+	l2 = (l2<<32)|aux;
+
+	retorno = l1^l2;
+	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno>>32));
+
+	return NORMAL_INST;
+
 }
 
 int _iinc() {
@@ -1759,9 +1908,9 @@ int _i2d() {
 
 	auxD.dbl = retorno;
 
-	aux = ((auxD.data[0]&0x00ff)<<24)|((auxD.data[1]&0x00ff)<<16)|((auxD.data[2]&0x00ff)<<8)|((auxD.data[3]&0x00ff));
+	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
 	push((u4)aux);
-	aux = ((auxD.data[4]&0x00ff)<<24)|((auxD.data[5]&0x00ff)<<16)|((auxD.data[6]&0x00ff)<<8)|((auxD.data[7]&0x00ff));
+	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
 	push((u4)aux);
 
 	return NORMAL_INST;
@@ -1805,9 +1954,9 @@ int _l2d() {
 	retorno = (double) l1;
 	auxD.dbl = retorno;
 
-	aux = ((auxD.data[0]&0x00ff)<<24)|((auxD.data[1]&0x00ff)<<16)|((auxD.data[2]&0x00ff)<<8)|((auxD.data[3]&0x00ff));
+	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
 	push((u4)aux);
-	aux = ((auxD.data[4]&0x00ff)<<24)|((auxD.data[5]&0x00ff)<<16)|((auxD.data[6]&0x00ff)<<8)|((auxD.data[7]&0x00ff));
+	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
 	push((u4)aux);
 
 	return NORMAL_INST;
@@ -1861,10 +2010,10 @@ int _f2d() {
 	retorno = (double) f1;
 	auxD.dbl = retorno;
 
-	aux = ((auxD.data[0]&0x00ff)<<24)|((auxD.data[1]&0x00ff)<<16)|((auxD.data[2]&0x00ff)<<8)|((auxD.data[3]&0x00ff));
+	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
 
 	push((u4)aux);
-	aux = ((auxD.data[4]&0x00ff)<<24)|((auxD.data[5]&0x00ff)<<16)|((auxD.data[6]&0x00ff)<<8)|((auxD.data[7]&0x00ff));
+	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
 	push((u4)aux);
 
 	return NORMAL_INST;
