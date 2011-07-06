@@ -395,25 +395,25 @@ void add_multiarray(u4 ** ponteiro, u4 * tamanhos, u4 dimensoes ){
 void printdbg_iconst(int valor) {
 
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
-	printf("Elemento inserido na pilha: %d\n", valor);
+	printf("printdbg_iconst - Elemento inserido na pilha: %d\n", valor);
 
 }
 void printdbg_fconst(float valor) {
 
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
-	printf("Elemento inserido na pilha: %f\n", valor);
+	printf("printdbg_fconst - Elemento inserido na pilha: %f\n", valor);
 
 }
 void printdbg_lconst(long valor) {
 
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
-	printf("Elemento inserido na pilha: %ld\n", valor);
+	printf("printdbg_lconst - Elemento inserido na pilha: %ld\n", valor);
 
 }
 void printdbg_dconst(double valor) {
 
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
-	printf("Elemento inserido na pilha: %f\n", valor);
+	printf("printdbg_dconst - Elemento inserido na pilha: %f\n", valor);
 
 }
 
@@ -585,12 +585,12 @@ int _bipush() {
 		signal = ~byte+1;
 		push(signal);
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %d \n",signal);
+	printf("_bipush if - Elemento inserido na pilha: %d \n",signal);
 #endif
 	}else{
 		push((u4)byte);
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %d \n",byte);
+	printf("_bipush else - Elemento inserido na pilha: %d \n",byte);
 #endif
 	}
 	return NORMAL_INST;
@@ -603,7 +603,7 @@ int _sipush() {
 #endif
 	valor = carrega_branch();
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", valor);
+	printf("sipush - Elemento inserido na pilha: %x\n", valor);
 #endif
 	push(valor);
 	return NORMAL_INST;
@@ -621,19 +621,19 @@ int _ldc() {
 	case CONSTANT_Integer:
 		push(frame_stack->constant_pool[indice].info.integer_info.bytes);
 #ifdef DEBUG
-		printf("Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.integer_info.bytes);
+		printf("ldc 1 -Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.integer_info.bytes);
 #endif
 		break;
 	case CONSTANT_Float:
 		push(frame_stack->constant_pool[indice].info.float_info.bytes);
 #ifdef DEBUG
-		printf("Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.float_info.bytes);
+		printf("ldc 2 - Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.float_info.bytes);
 #endif
 		break;
 	case CONSTANT_String:
 		valor = get_utf8_string(frame_stack->constant_pool, frame_stack->constant_pool[indice].info.string_info.string_index);
 #ifdef DEBUG
-		printf("Elemento inserido na pilha: %s\n", (char *)valor);
+		printf("ldc 3 - Elemento inserido na pilha: %s\n", (char *)valor);
 #endif
 		push((u4) valor);
 		break;
@@ -661,13 +661,13 @@ int _ldc_w() {
 	case CONSTANT_Float:
 		push(frame_stack->constant_pool[indice].info.float_info.bytes);
 #ifdef DEBUG
-		printf("Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.float_info.bytes);
+		printf("ldc_w 1 - Elemento inserido na pilha: %x\n", frame_stack->constant_pool[indice].info.float_info.bytes);
 #endif
 		break;
 	case CONSTANT_String:
 		string = get_utf8_string(frame_stack->constant_pool, frame_stack->constant_pool[indice].info.string_info.string_index);
 #ifdef DEBUG
-		printf("Elemento inserido na pilha: %s\n", (char *)string);
+		printf("ldc_w 2 - Elemento inserido na pilha: %s\n", (char *)string);
 #endif
 		push((u4) string);
 		break;
@@ -715,7 +715,7 @@ int _iload() {
 	frame_stack->pc++;
 	indice = frame_stack->code_attribute->code[frame_stack->pc];
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", frame_stack->variable[indice]);
+	printf("iload - Elemento inserido na pilha: %x\n", frame_stack->variable[indice]);
 #endif
 	push(frame_stack->variable[indice]);
 	return NORMAL_INST;
@@ -744,7 +744,7 @@ int _fload() {
 	frame_stack->pc++;
 	indice = frame_stack->code_attribute->code[frame_stack->pc];
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", frame_stack->variable[indice]);
+	printf("fload - Elemento inserido na pilha: %x\n", frame_stack->variable[indice]);
 #endif
 	push(frame_stack->variable[indice]);
 	return NORMAL_INST;
@@ -774,7 +774,7 @@ int _aload() {
 	frame_stack->pc++;
 	indice = frame_stack->code_attribute->code[frame_stack->pc];
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", frame_stack->variable[indice]);
+	printf("aload - Elemento inserido na pilha: %x\n", frame_stack->variable[indice]);
 #endif
 	push(frame_stack->variable[indice]);
 	return NORMAL_INST;
@@ -959,7 +959,7 @@ int _iaload() {
 	u4 referencia = pop();
 	*vetor = (u4 *)referencia;
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", *(*vetor+indice));
+	printf("iaload - Elemento inserido na pilha: %x\n", *(*vetor+indice));
 #endif
 	push(*(*vetor+indice));
 	return NORMAL_INST;
@@ -993,7 +993,7 @@ int _faload() {
 	u4 referencia = pop();
 	*vetor = (u4 *)referencia;
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", *(*vetor+indice));
+	printf("faload - Elemento inserido na pilha: %x\n", *(*vetor+indice));
 #endif
 	push(*(*vetor+indice));
 	return NORMAL_INST;
@@ -1013,7 +1013,7 @@ int _daload() {
 	union u_double auxD;
 	auxD.dbl = (*(*vetor+indice));
 
-	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
+	u4 aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
 	push((u4)aux);
 	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
 	push((u4)aux);
@@ -1032,7 +1032,7 @@ int _aaload() {
 	u4 referencia = pop();
 	*vetor = (u4 *)referencia;
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", *(*vetor+indice));
+	printf("aaload - Elemento inserido na pilha: %x\n", *(*vetor+indice));
 #endif
 	push(*(*vetor+indice));
 	return NORMAL_INST;
@@ -1047,7 +1047,7 @@ int _baload() {
 	u4 referencia = pop();
 	*vetor = (u1 *) referencia;
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", *(*vetor+indice));
+	printf("baload - Elemento inserido na pilha: %x\n", *(*vetor+indice));
 #endif
 	push(*(*vetor+indice));
 	return NORMAL_INST;
@@ -1062,7 +1062,7 @@ int _caload() {
 	u4 referencia = pop();
 	*vetor = (u1 *) referencia;
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", *(*vetor+indice));
+	printf("caload - Elemento inserido na pilha: %x\n", *(*vetor+indice));
 #endif
 	push(*(*vetor+indice));
 	return NORMAL_INST;
@@ -1077,7 +1077,7 @@ int _saload() {
 	u4 referencia = pop();
 	*vetor = (u2 *) referencia;
 #ifdef DEBUG
-	printf("Elemento inserido na pilha: %x\n", *(*vetor+indice));
+	printf("saload - Elemento inserido na pilha: %x\n", *(*vetor+indice));
 #endif
 	push(*(*vetor+indice));
 	return NORMAL_INST;
@@ -1095,8 +1095,15 @@ int _istore() {
 }
 
 int _lstore() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	u1 indice;
+	frame_stack->pc++;
+	indice = frame_stack->code_attribute->code[frame_stack->pc];
+	frame_stack->variable[indice] = pop();
+	frame_stack->variable[indice+1] = pop();
+	return NORMAL_INST;
 }
 
 int _fstore() {
@@ -1111,8 +1118,17 @@ int _fstore() {
 }
 
 int _dstore() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	u1 indice;
+	frame_stack->pc++;
+	indice = frame_stack->code_attribute->code[frame_stack->pc];
+	frame_stack->variable[indice] = pop();
+	frame_stack->variable[indice+1] = pop();
+
+
+	return NORMAL_INST;
 }
 
 int _astore() {
@@ -1159,23 +1175,51 @@ int _istore_3() {
 }
 
 int _lstore_0() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->variable[0] = pop();
+	frame_stack->variable[1] = pop();
+
+	return NORMAL_INST;
 }
+
+//--------------------------------------------------------------------
+
 
 int _lstore_1() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->variable[1] = pop();
+	frame_stack->variable[2] = pop();
+
+	return NORMAL_INST;
 }
+
+
+//-------------------------------------------------------------------------------------
+
 
 int _lstore_2() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->variable[2] = pop();
+	frame_stack->variable[3] = pop();
+
+	return NORMAL_INST;
 }
 
+//----------------------------------------------------------------------------------
 int _lstore_3() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->variable[3] = pop();
+	frame_stack->variable[4] = pop();
+
+	return NORMAL_INST;
 }
 
 int _fstore_0() {
@@ -1211,23 +1255,51 @@ int _fstore_3() {
 }
 
 int _dstore_0() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->variable[0] = pop();
+	frame_stack->variable[1] = pop();
+
+	return NORMAL_INST;
 }
+
+//----------------------------------------------------------------------------------
+
 
 int _dstore_1() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->variable[1] = pop();
+	frame_stack->variable[2] = pop();
+
+		return NORMAL_INST;
 }
+
+//----------------------------------------------------------------------------------
 
 int _dstore_2() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->variable[2] = pop();
+	frame_stack->variable[3] = pop();
+
+		return NORMAL_INST;
 }
 
+//----------------------------------------------------------------------------------
+
+
 int _dstore_3() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->variable[3] = pop();
+	frame_stack->variable[4] = pop();
+
+		return NORMAL_INST;
 }
 
 int _astore_0() {
@@ -1276,8 +1348,23 @@ int _iastore() {
 }
 
 int _lastore() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	long long int l1;
+	u4 aux, indice, referencia;
+	long long int ** vetor = malloc(sizeof(long long int*));
+
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	indice = pop();
+	referencia = pop();
+
+	*vetor = (long long int*)referencia;
+	memcpy((*vetor+indice), &l1, sizeof(long long int));
+	return NORMAL_INST;
 }
 
 int _fastore() {
@@ -1294,8 +1381,33 @@ int _fastore() {
 }
 
 int _dastore() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+
+	union u_double d1;
+		u4 aux, indice, referencia;
+		double ** vetor = malloc(sizeof(double*));
+
+		aux = pop();
+		d1.data[0] = (aux&0xFF000000)>>24;
+		d1.data[1] = (aux&0x00FF0000)>>16;
+		d1.data[2] = (aux&0x0000FF00)>>8;
+		d1.data[3] = (aux&0x000000FF);
+
+		aux = pop();
+		d1.data[4] = (aux&0xFF000000)>>24;
+		d1.data[5] = (aux&0x00FF0000)>>16;
+		d1.data[6] = (aux&0x0000FF00)>>8;
+		d1.data[7] = (aux&0x000000FF);
+
+		indice = pop();
+		referencia = pop();
+
+		*vetor = (double *)referencia;
+
+		memcpy((*vetor+indice), &d1, sizeof(double));
+	return NORMAL_INST;
 }
 
 int _aastore() {
