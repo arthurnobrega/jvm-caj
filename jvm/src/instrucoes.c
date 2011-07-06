@@ -679,8 +679,32 @@ int _ldc_w() {
 }
 
 int _ldc2_w() {
-	/*Não implementado.*/
-	return NAO_IMP;
+		u2 indice;
+	#ifdef DEBUG
+		printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+	#endif
+		indice = carrega_branch();
+		switch(frame_stack->constant_pool[indice].tag){
+		case CONSTANT_Double:
+			push(frame_stack->constant_pool[indice].info.double_info.low_bytes);
+			push(frame_stack->constant_pool[indice].info.double_info.high_bytes);
+	#ifdef DEBUG
+			printf("Elemento(double) inserido na pilha: low->%x high->%x\n", frame_stack->constant_pool[indice].info.double_info.low_bytes,frame_stack->constant_pool[indice].info.double_info.high_bytes);
+	#endif
+					break;
+		case CONSTANT_Long:
+			push(frame_stack->constant_pool[indice].info.long_info.low_bytes);
+			push(frame_stack->constant_pool[indice].info.long_info.high_bytes);
+	#ifdef DEBUG
+			printf("Elemento(long) inserido na pilha: low->%x high->%x\n", frame_stack->constant_pool[indice].info.long_info.low_bytes,frame_stack->constant_pool[indice].info.long_info.high_bytes);
+	#endif
+			break;
+
+		default:
+			printf("ldc(%d): Operando inválido!!!!",frame_stack->pc);
+			exit(1);
+		}
+		return NORMAL_INST;
 }
 
 int _iload() {
@@ -698,8 +722,18 @@ int _iload() {
 }
 
 int _lload() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	u1 indice;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->pc++;
+	indice = frame_stack->code_attribute->code[frame_stack->pc];
+#ifdef DEBUG
+	printf("Elemento inserido na pilha: %x\n", frame_stack->variable[indice]);
+#endif
+	push(frame_stack->variable[indice]);/*parte baixa?*/
+	push(frame_stack->variable[indice+1]);/*parte alta?*/
+	return NORMAL_INST;
 }
 
 int _fload() {
@@ -717,8 +751,19 @@ int _fload() {
 }
 
 int _dload() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	u1 indice;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	frame_stack->pc++;
+	indice = frame_stack->code_attribute->code[frame_stack->pc];
+#ifdef DEBUG
+	printf("talvez de erro nessa parte\n\narquivo:intrucoes.c\nfuncao dload()\nElemento inserido na pilha: alta?%x .. baixa?%d\n", frame_stack->variable[indice],frame_stack->variable[indice+1]);
+#endif
+
+	push(frame_stack->variable[indice]);/*parte baixa?*/
+	push(frame_stack->variable[indice+1]);/*parte alta?*/
+	return NORMAL_INST;
 }
 
 int _aload() {
@@ -768,23 +813,39 @@ int _iload_3() {
 }
 
 int _lload_0() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	push(frame_stack->variable[0]);
+	push(frame_stack->variable[1]);
+	return NORMAL_INST;
 }
 
 int _lload_1() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	push(frame_stack->variable[1]);
+	push(frame_stack->variable[2]);
+	return NORMAL_INST;
 }
 
 int _lload_2() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	push(frame_stack->variable[2]);
+	push(frame_stack->variable[3]);
+	return NORMAL_INST;
 }
 
 int _lload_3() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	push(frame_stack->variable[3]);
+	push(frame_stack->variable[4]);
+	return NORMAL_INST;
 }
 
 int _fload_0() {
@@ -820,23 +881,39 @@ int _fload_3() {
 }
 
 int _dload_0() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	push(frame_stack->variable[0]);
+	push(frame_stack->variable[1]);
+	return NORMAL_INST;
 }
 
 int _dload_1() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	push(frame_stack->variable[1]);
+	push(frame_stack->variable[2]);
+	return NORMAL_INST;
 }
 
 int _dload_2() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	push(frame_stack->variable[2]);
+	push(frame_stack->variable[3]);
+	return NORMAL_INST;
 }
 
 int _dload_3() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	push(frame_stack->variable[3]);
+	push(frame_stack->variable[4]);
+	return NORMAL_INST;
 }
 
 int _aload_0() {
