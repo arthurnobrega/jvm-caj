@@ -731,8 +731,8 @@ int _lload() {
 #ifdef DEBUG
 	printf("Elemento inserido na pilha: %x\n", frame_stack->variable[indice]);
 #endif
-	push(frame_stack->variable[indice]);/*parte baixa?*/
-	push(frame_stack->variable[indice+1]);/*parte alta?*/
+	push(frame_stack->variable[indice+1]);/*parte baixa?*/
+	push(frame_stack->variable[indice]);/*parte alta?*/
 	return NORMAL_INST;
 }
 
@@ -761,8 +761,8 @@ int _dload() {
 	printf("talvez de erro nessa parte\n\narquivo:intrucoes.c\nfuncao dload()\nElemento inserido na pilha: alta?%x .. baixa?%d\n", frame_stack->variable[indice],frame_stack->variable[indice+1]);
 #endif
 
-	push(frame_stack->variable[indice]);/*parte baixa?*/
-	push(frame_stack->variable[indice+1]);/*parte alta?*/
+	push(frame_stack->variable[indice+1]);/*parte baixa?*/
+	push(frame_stack->variable[indice]);/*parte alta?*/
 	return NORMAL_INST;
 }
 
@@ -816,8 +816,8 @@ int _lload_0() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[0]);
 	push(frame_stack->variable[1]);
+	push(frame_stack->variable[0]);
 	return NORMAL_INST;
 }
 
@@ -825,8 +825,8 @@ int _lload_1() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[1]);
 	push(frame_stack->variable[2]);
+	push(frame_stack->variable[1]);
 	return NORMAL_INST;
 }
 
@@ -834,8 +834,8 @@ int _lload_2() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[2]);
 	push(frame_stack->variable[3]);
+	push(frame_stack->variable[2]);
 	return NORMAL_INST;
 }
 
@@ -843,8 +843,8 @@ int _lload_3() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[3]);
 	push(frame_stack->variable[4]);
+	push(frame_stack->variable[3]);
 	return NORMAL_INST;
 }
 
@@ -884,8 +884,8 @@ int _dload_0() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[0]);
 	push(frame_stack->variable[1]);
+	push(frame_stack->variable[0]);
 	return NORMAL_INST;
 }
 
@@ -893,8 +893,8 @@ int _dload_1() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[1]);
 	push(frame_stack->variable[2]);
+	push(frame_stack->variable[1]);
 	return NORMAL_INST;
 }
 
@@ -902,8 +902,8 @@ int _dload_2() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[2]);
 	push(frame_stack->variable[3]);
+	push(frame_stack->variable[2]);
 	return NORMAL_INST;
 }
 
@@ -911,8 +911,8 @@ int _dload_3() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[3]);
 	push(frame_stack->variable[4]);
+	push(frame_stack->variable[3]);
 	return NORMAL_INST;
 }
 
@@ -1810,7 +1810,7 @@ int _ddiv() {
 	if (d1.dbl == 0){
 		exit(DIV_ZERO);
 	}
-	auxD = d2.dbl / d1.dbl;
+	auxD.dbl = d2.dbl / d1.dbl;
 
 	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
 	push((u4)aux);
