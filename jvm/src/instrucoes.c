@@ -493,13 +493,21 @@ int _iconst_5() {
 }
 
 int _lconst_0() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1;
+	l1 = 0;
+
+	push((u4)l1&0x0000FFFF);
+	push((u4)(l1>>32));
+	return NORMAL_INST;
 }
 
 int _lconst_1() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1;
+	l1 = 1;
+
+	push((u4)l1&0x0000FFFF);
+	push((u4)(l1>>32));
+	return NORMAL_INST;
 }
 
 int _fconst_0() {
@@ -536,13 +544,29 @@ int _fconst_2() {
 }
 
 int _dconst_0() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d;
+	d.dbl = 0;
+	u4 aux;
+
+	aux = ((d.data[3]&0x00ff)<<24)|((d.data[2]&0x00ff)<<16)|((d.data[1]&0x00ff)<<8)|((d.data[0]&0x00ff));
+	push((u4)aux);
+	aux = ((d.data[7]&0x00ff)<<24)|((d.data[6]&0x00ff)<<16)|((d.data[5]&0x00ff)<<8)|((d.data[4]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _dconst_1() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d;
+	d.dbl = 1;
+	u4 aux;
+
+	aux = ((d.data[3]&0x00ff)<<24)|((d.data[2]&0x00ff)<<16)|((d.data[1]&0x00ff)<<8)|((d.data[0]&0x00ff));
+	push((u4)aux);
+	aux = ((d.data[7]&0x00ff)<<24)|((d.data[6]&0x00ff)<<16)|((d.data[5]&0x00ff)<<8)|((d.data[4]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _bipush() {
@@ -1339,10 +1363,30 @@ int _iadd() {
 	push((u4)(valor1 + valor2));
 	return NORMAL_INST;
 }
-
 int _ladd() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	long long int l1,l2, aux, aux2, retorno;
+
+
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	l2 = pop();
+	aux2 = pop();
+	l2 = (l2<<32)|aux2;
+
+	retorno = l1 + l2;
+
+	aux = retorno&0x0000FFFF;
+	push((u4)aux);
+	aux = retorno>>32;
+	push((u4)aux);
+
+	return NORMAL_INST;
+
 }
 
 int _fadd() {
@@ -1366,8 +1410,44 @@ int _fadd() {
 }
 
 int _dadd() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	union u_double d1,d2, auxD;
+	u4 aux;
+
+	aux = pop();
+	d1.data[0] = (aux&0xFF000000)>>24;
+	d1.data[1] = (aux&0x00FF0000)>>16;
+	d1.data[2] = (aux&0x0000FF00)>>8;
+	d1.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+	d1.data[4] = (aux&0xFF000000)>>24;
+	d1.data[5] = (aux&0x00FF0000)>>16;
+	d1.data[6] = (aux&0x0000FF00)>>8;
+	d1.data[7] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[0] = (aux&0xFF000000)>>24;
+	d2.data[1] = (aux&0x00FF0000)>>16;
+	d2.data[2] = (aux&0x0000FF00)>>8;
+	d2.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[4] = (aux&0xFF000000)>>24;
+	d2.data[5] = (aux&0x00FF0000)>>16;
+	d2.data[6] = (aux&0x0000FF00)>>8;
+	d2.data[7] = (aux&0x000000FF);
+
+	auxD.dbl = d1.dbl + d2.dbl;
+
+	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
+	push((u4)aux);
+	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _isub() {
@@ -1382,8 +1462,29 @@ int _isub() {
 }
 
 int _lsub() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	long long int l1,l2, aux, aux2, retorno;
+
+
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	l2 = pop();
+	aux2 = pop();
+	l2 = (l2<<32)|aux2;
+
+	retorno = l2 - l1;
+
+	aux = retorno&0x0000FFFF;
+	push((u4)aux);
+	aux = retorno>>32;
+	push((u4)aux);
+
+	return NORMAL_INST;
+
 }
 
 int _fsub() {
@@ -1407,8 +1508,41 @@ int _fsub() {
 }
 
 int _dsub() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1,d2, auxD;
+	u4 aux;
+
+	aux = pop();
+	d1.data[0] = (aux&0xFF000000)>>24;
+	d1.data[1] = (aux&0x00FF0000)>>16;
+	d1.data[2] = (aux&0x0000FF00)>>8;
+	d1.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+	d1.data[4] = (aux&0xFF000000)>>24;
+	d1.data[5] = (aux&0x00FF0000)>>16;
+	d1.data[6] = (aux&0x0000FF00)>>8;
+	d1.data[7] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[0] = (aux&0xFF000000)>>24;
+	d2.data[1] = (aux&0x00FF0000)>>16;
+	d2.data[2] = (aux&0x0000FF00)>>8;
+	d2.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[4] = (aux&0xFF000000)>>24;
+	d2.data[5] = (aux&0x00FF0000)>>16;
+	d2.data[6] = (aux&0x0000FF00)>>8;
+	d2.data[7] = (aux&0x000000FF);
+
+	auxD.dbl = d2.dbl - d1.dbl;
+
+	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
+	push((u4)aux);
+	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _imul() {
@@ -1424,8 +1558,25 @@ int _imul() {
 }
 
 int _lmul() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1,l2, aux, aux2, retorno;
+
+
+	l1 = pop();
+	aux = pop();
+	l1 = (l1<<32)|aux;
+
+	l2 = pop();
+	aux2 = pop();
+	l2 = (l2<<32)|aux2;
+
+	retorno = l1 * l2;
+
+	aux = retorno&0x0000FFFF;
+	push((u4)aux);
+	aux = retorno>>32;
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _fmul() {
@@ -1449,8 +1600,41 @@ int _fmul() {
 }
 
 int _dmul() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1,d2, auxD;
+	u4 aux;
+
+	aux = pop();
+	d1.data[0] = (aux&0xFF000000)>>24;
+	d1.data[1] = (aux&0x00FF0000)>>16;
+	d1.data[2] = (aux&0x0000FF00)>>8;
+	d1.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+	d1.data[4] = (aux&0xFF000000)>>24;
+	d1.data[5] = (aux&0x00FF0000)>>16;
+	d1.data[6] = (aux&0x0000FF00)>>8;
+	d1.data[7] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[0] = (aux&0xFF000000)>>24;
+	d2.data[1] = (aux&0x00FF0000)>>16;
+	d2.data[2] = (aux&0x0000FF00)>>8;
+	d2.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[4] = (aux&0xFF000000)>>24;
+	d2.data[5] = (aux&0x00FF0000)>>16;
+	d2.data[6] = (aux&0x0000FF00)>>8;
+	d2.data[7] = (aux&0x000000FF);
+
+	auxD.dbl = d1.dbl * d2.dbl;
+
+	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
+	push((u4)aux);
+	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _idiv() {
@@ -1461,7 +1645,7 @@ int _idiv() {
 	valor1 = (int) pop();
 	valor2 = (int) pop();
 	/*se valor2 = 0, aborta o programa por causa da operacao ilegal*/
-	if (valor2 == 0) {
+	if (valor1 == 0) {
 		/*erro - divisão inteira por zero*/
 		exit(DIV_ZERO);
 	}
@@ -1470,8 +1654,29 @@ int _idiv() {
 }
 
 int _ldiv() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	long long int l1,l2, aux, aux2, retorno;
+
+
+		l1 = pop();
+		aux = pop();
+		l1 = (l1<<32)|aux;
+
+		l2 = pop();
+		aux2 = pop();
+		l2 = (l2<<32)|aux2;
+
+		if (l1 == 0){
+			exit(DIV_ZERO);
+		}
+
+		retorno = l2 / l1;
+
+		aux = retorno&0x0000FFFF;
+		push((u4)aux);
+		aux = retorno>>32;
+		push((u4)aux);
+
+		return NORMAL_INST;
 }
 
 int _fdiv() {
@@ -1487,6 +1692,9 @@ int _fdiv() {
 	memcpy(&valor1_f,&v1,sizeof(float));
 	memcpy(&valor2_f,&v2,sizeof(float));
 
+	if (valor1_f == 0){
+		exit(DIV_ZERO);
+	}
 	retorno_f = (valor2_f) / (valor1_f);
 	memcpy(&retorno, &retorno_f, sizeof(u4));
 
@@ -1495,8 +1703,44 @@ int _fdiv() {
 }
 
 int _ddiv() {
-	/*Não implementado.*/
-	return NAO_IMP;
+	union u_double d1,d2, auxD;
+	u4 aux;
+
+	aux = pop();
+	d1.data[0] = (aux&0xFF000000)>>24;
+	d1.data[1] = (aux&0x00FF0000)>>16;
+	d1.data[2] = (aux&0x0000FF00)>>8;
+	d1.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+	d1.data[4] = (aux&0xFF000000)>>24;
+	d1.data[5] = (aux&0x00FF0000)>>16;
+	d1.data[6] = (aux&0x0000FF00)>>8;
+	d1.data[7] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[0] = (aux&0xFF000000)>>24;
+	d2.data[1] = (aux&0x00FF0000)>>16;
+	d2.data[2] = (aux&0x0000FF00)>>8;
+	d2.data[3] = (aux&0x000000FF);
+
+	aux = pop();
+	d2.data[4] = (aux&0xFF000000)>>24;
+	d2.data[5] = (aux&0x00FF0000)>>16;
+	d2.data[6] = (aux&0x0000FF00)>>8;
+	d2.data[7] = (aux&0x000000FF);
+
+	if (d1.dbl == 0){
+		exit(DIV_ZERO);
+	}
+	auxD = d2.dbl / d1.dbl;
+
+	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
+	push((u4)aux);
+	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 int _irem() {
@@ -1703,7 +1947,7 @@ int _lshr() {
 	int i;
 	i = pop();
 	i &= MASK_SHIFT;
-	u4 aux, retorno;
+	u4 aux;
 	l1 = pop();
 	aux = pop();
 	l1 = (l1<<32)|aux;
@@ -1744,7 +1988,7 @@ int _lushr() {
 	int i;
 	i = pop();
 	i &= MASK_SHIFT;
-	u4 aux, retorno;
+	u4 aux;
 	l1 = pop();
 	aux = pop();
 	l1 = (l1<<32)|aux;
@@ -1771,7 +2015,7 @@ int _iand() {
 int _land() {
 
 	long long int l1, l2,retorno;
-	u4 aux, retorno;
+	u4 aux;
 	l1 = pop();
 	aux = pop();
 	l1 = (l1<<32)|aux;
@@ -1801,7 +2045,7 @@ int _ior() {
 
 int _lor() {
 	long long int l1, l2,retorno;
-	u4 aux, retorno;
+	u4 aux;
 	l1 = pop();
 	aux = pop();
 	l1 = (l1<<32)|aux;
@@ -1831,7 +2075,7 @@ int _ixor() {
 
 int _lxor() {
 	long long int l1, l2,retorno;
-	u4 aux, retorno;
+	u4 aux;
 	l1 = pop();
 	aux = pop();
 	l1 = (l1<<32)|aux;
@@ -2011,7 +2255,6 @@ int _f2d() {
 	auxD.dbl = retorno;
 
 	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
-
 	push((u4)aux);
 	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
 	push((u4)aux);
