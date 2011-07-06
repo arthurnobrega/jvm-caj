@@ -966,8 +966,20 @@ int _iaload() {
 }
 
 int _laload() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	u4 indice = pop();
+	long long int **vetor = malloc(sizeof(long long int *));
+	u4 referencia = pop();
+	*vetor = (u4 *)referencia;
+#ifdef DEBUG
+	printf("Elemento inserido na pilha: %x\n", *(*vetor+indice));
+#endif
+	push((*(*vetor+indice))&0x0000FFFF);
+	push((*(*vetor+indice))>>32);
+
+	return NORMAL_INST;
 }
 
 /*NOTA: O vetor é de floats, mas aqui ele pode ser interpretado como u4 pois Não estamos
@@ -988,8 +1000,25 @@ int _faload() {
 }
 
 int _daload() {
-	/*Não implementado.*/
-	return NAO_IMP;
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+	u4 indice = pop();
+	double **vetor = malloc(sizeof(double *));
+	u4 referencia = pop();
+	*vetor = (u4 *)referencia;
+#ifdef DEBUG
+	printf("Elemento inserido na pilha: %x\n", *(*vetor+indice));
+#endif
+	union u_double auxD;
+	auxD.dbl = (*(*vetor+indice));
+
+	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
+	push((u4)aux);
+	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
+	push((u4)aux);
+
+	return NORMAL_INST;
 }
 
 /*NOTA: O vetor é de referencias, mas aqui ele pode ser interpretado como u4 pois Não estamos
