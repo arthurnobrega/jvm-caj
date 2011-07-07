@@ -81,8 +81,8 @@ int main(int argc, char *argv[]) {
 	 */
 	boot(class_file);
 
-	printf("\n\nPressione <ENTER> para sair...");
-	getchar();
+//	printf("\n\nPressione <ENTER> para sair...");
+//	getchar();
 	
 	/*compilacao condicional para testes..*/
 

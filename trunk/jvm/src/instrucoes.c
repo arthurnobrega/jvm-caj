@@ -17,6 +17,10 @@ insturcoes.c: Módulo com a implementação das instruções da Virtual Machine.
 #include "headers/debug.h"
 #include <math.h>
 
+double get_double(union u_double u);
+u4 extract_double_high(union u_double u);
+u4 extract_double_low(union u_double u);
+
 void init_instructions() {
 	instrucao[0x00] = _nop;
 	instrucao[0x01] = _aconst_null;
@@ -352,6 +356,9 @@ void invoke(int estatico) {
 		} else if (strcmp((char *) func_desc, "(Ljava/lang/String;)V") == 0) {
 			printf("%s\n", (char *) pop());
 		} else if (strcmp((char *) func_desc, "(D)V") == 0) {
+#ifdef DEBUG
+		printf("entrou para imprimir um double\n");
+#endif
 			union u_double d1;
 			u4 aux;
 			aux = pop();
@@ -369,6 +376,9 @@ void invoke(int estatico) {
 			printf("%g\n", d1.dbl);
 
 		} else if (strcmp((char *) func_desc, "(J)V") == 0) {
+#ifdef DEBUG
+		printf("entrou para imprimir um long\n");
+#endif
 			long long int l1, aux;
 
 			l1 = pop();
@@ -597,9 +607,13 @@ int _dconst_1() {
 	d.dbl = 1;
 	u4 aux;
 
-	aux = ((d.data[3]&0x00ff)<<24)|((d.data[2]&0x00ff)<<16)|((d.data[1]&0x00ff)<<8)|((d.data[0]&0x00ff));
+#ifdef DEBUG
+	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
+#endif
+
+	aux = extract_double_high(d);
 	push((u4)aux);
-	aux = ((d.data[7]&0x00ff)<<24)|((d.data[6]&0x00ff)<<16)|((d.data[5]&0x00ff)<<8)|((d.data[4]&0x00ff));
+	aux = extract_double_low(d);
 	push((u4)aux);
 
 	return NORMAL_INST;
@@ -1686,45 +1700,40 @@ int _dadd() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	union u_double auxD;
+	union u_double unionDbl1;
 	u4 aux;
 
 	aux = pop();
-//	d1.data[0] = (aux&0xFF000000)>>24;
-//	d1.data[1] = (aux&0x00FF0000)>>16;
-//	d1.data[2] = (aux&0x0000FF00)>>8;
-//	d1.data[3] = (aux&0x000000FF);
-	double *d = (double *) malloc(sizeof(double));
-	d = (double *) memcpy(d,&aux,sizeof(u4));
-	//printf("%x %f\n", aux, *d);
-
+	unionDbl1.data[0] = (aux&0xFF000000)>>24;
+	printf("data0=%x\n", unionDbl1.data[0]);
+	unionDbl1.data[1] = (aux&0x00FF0000)>>16;
+	unionDbl1.data[2] = (aux&0x0000FF00)>>8;
+	unionDbl1.data[3] = (aux&0x000000FF);
+	aux = pop();
+	unionDbl1.data[4] = (aux&0xFF000000)>>24;
+	unionDbl1.data[5] = (aux&0x00FF0000)>>16;
+	unionDbl1.data[6] = (aux&0x0000FF00)>>8;
+	unionDbl1.data[7] = (aux&0x000000FF);
+	double primeiro = get_double(unionDbl1);
 
 	aux = pop();
-	memcpy(d+4,&aux,sizeof(u4));
-//	d1.data[4] = (aux&0xFF000000)>>24;
-//	d1.data[5] = (aux&0x00FF0000)>>16;
-//	d1.data[6] = (aux&0x0000FF00)>>8;
-//	d1.data[7] = (aux&0x000000FF);
-//	printf("%x\n", aux);
-//	printf("MEU DOUBLE: %f\n", *d);
+	unionDbl1.data[0] = (aux&0xFF000000)>>24;
+	unionDbl1.data[1] = (aux&0x00FF0000)>>16;
+	unionDbl1.data[2] = (aux&0x0000FF00)>>8;
+	unionDbl1.data[3] = (aux&0x000000FF);
+	aux = pop();
+	unionDbl1.data[4] = (aux&0xFF000000)>>24;
+	unionDbl1.data[5] = (aux&0x00FF0000)>>16;
+	unionDbl1.data[6] = (aux&0x0000FF00)>>8;
+	unionDbl1.data[7] = (aux&0x000000FF);
+	double segundo = get_double(unionDbl1);
 
-//	aux = pop();
-//	d2.data[0] = (aux&0xFF000000)>>24;
-//	d2.data[1] = (aux&0x00FF0000)>>16;
-//	d2.data[2] = (aux&0x0000FF00)>>8;
-//	d2.data[3] = (aux&0x000000FF);
-//
-//	aux = pop();
-//	d2.data[4] = (aux&0xFF000000)>>24;
-//	d2.data[5] = (aux&0x00FF0000)>>16;
-//	d2.data[6] = (aux&0x0000FF00)>>8;
-//	d2.data[7] = (aux&0x000000FF);
-//
-//	auxD.dbl = d1.dbl + d2.dbl;
+	unionDbl1.dbl = primeiro + segundo;
+	printf("soma=%f", unionDbl1.dbl);
 
-	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
+	aux = extract_double_high(unionDbl1);
 	push((u4)aux);
-	aux = ((auxD.data[7]&0x00ff)<<24)|((auxD.data[6]&0x00ff)<<16)|((auxD.data[5]&0x00ff)<<8)|((auxD.data[4]&0x00ff));
+	aux = ((u4)(unionDbl1.data[7]&0x00ff)<<24)|((u4)(unionDbl1.data[6]&0x00ff)<<16)|((u4)(unionDbl1.data[5]&0x00ff)<<8)|((u4)(unionDbl1.data[4]&0x00ff));
 	push((u4)aux);
 
 	return NORMAL_INST;
@@ -3491,4 +3500,161 @@ int is_inegative(u4 value) {
 int convert_u4_to_int(u4 value) {
 	printf("%d\n", -(~value + 1));
 	return (int)-(~value + 1);
+}
+
+double get_double(union u_double u) {
+	int signal = (u.data[0]&0x80)>>7;
+	int index = ((int)(u.data[0]&0x7F)<<4)|((int)(u.data[1]&0xF0));
+	index -= 1023;
+	char b1 = (u.data[1]>>3)&1;
+	char b2 = (u.data[1]>>2)&1;
+	char b3 = (u.data[1]>>1)&1;
+	char b4 = (u.data[1])&1;
+
+	char b5 = (u.data[2]>>7)&1;
+	char b6 = (u.data[2]>>6)&1;
+	char b7 = (u.data[2]>>5)&1;
+	char b8 = (u.data[2]>>4)&1;
+	char b9 = (u.data[2]>>3)&1;
+	char b10 = (u.data[2]>>2)&1;
+	char b11 = (u.data[2]>>1)&1;
+	char b12 = (u.data[2])&1;
+
+	char b13 = (u.data[3]>>7)&1;
+	char b14 = (u.data[3]>>6)&1;
+	char b15 = (u.data[3]>>5)&1;
+	char b16 = (u.data[3]>>4)&1;
+	char b17 = (u.data[3]>>3)&1;
+	char b18 = (u.data[3]>>2)&1;
+	char b19 = (u.data[3]>>1)&1;
+	char b20 = (u.data[3])&1;
+
+	char b21 = (u.data[4]>>7)&1;
+	char b22 = (u.data[4]>>6)&1;
+	char b23 = (u.data[4]>>5)&1;
+	char b24 = (u.data[4]>>4)&1;
+	char b25 = (u.data[4]>>3)&1;
+	char b26 = (u.data[4]>>2)&1;
+	char b27 = (u.data[4]>>1)&1;
+	char b28 = (u.data[4])&1;
+
+	char b29 = (u.data[5]>>7)&1;
+	char b30 = (u.data[5]>>6)&1;
+	char b31 = (u.data[5]>>5)&1;
+	char b32 = (u.data[5]>>4)&1;
+	char b33 = (u.data[5]>>3)&1;
+	char b34 = (u.data[5]>>2)&1;
+	char b35 = (u.data[5]>>1)&1;
+	char b36 = (u.data[5])&1;
+
+	char b37 = (u.data[6]>>7)&1;
+	char b38 = (u.data[6]>>6)&1;
+	char b39 = (u.data[6]>>5)&1;
+	char b40 = (u.data[6]>>4)&1;
+	char b41 = (u.data[6]>>3)&1;
+	char b42 = (u.data[6]>>2)&1;
+	char b43 = (u.data[6]>>1)&1;
+	char b44 = (u.data[6])&1;
+
+	char b45 = (u.data[7]>>7)&1;
+	char b46 = (u.data[7]>>6)&1;
+	char b47 = (u.data[7]>>5)&1;
+	char b48 = (u.data[7]>>4)&1;
+	char b49 = (u.data[7]>>3)&1;
+	char b50 = (u.data[7]>>2)&1;
+	char b51 = (u.data[7]>>1)&1;
+	char b52 = (u.data[7])&1;
+
+	double resultado = 1;
+	resultado += b1*pow((double)2, (double)-1);
+	resultado += b2*pow((double)2, (double)-2);
+	resultado += b3*pow((double)2, (double)-3);
+	resultado += b4*pow((double)2, (double)-4);
+	resultado += b5*pow((double)2, (double)-5);
+	resultado += b6*pow((double)2, (double)-6);
+	resultado += b7*pow((double)2, (double)-7);
+	resultado += b8*pow((double)2, (double)-8);
+	resultado += b9*pow((double)2, (double)-9);
+	resultado += b10*pow((double)2, (double)-10);
+	resultado += b11*pow((double)2, (double)-11);
+	resultado += b12*pow((double)2, (double)-12);
+	resultado += b13*pow((double)2, (double)-13);
+	resultado += b14*pow((double)2, (double)-14);
+	resultado += b15*pow((double)2, (double)-15);
+	resultado += b16*pow((double)2, (double)-16);
+	resultado += b17*pow((double)2, (double)-17);
+	resultado += b18*pow((double)2, (double)-18);
+	resultado += b19*pow((double)2, (double)-19);
+	resultado += b20*pow((double)2, (double)-20);
+	resultado += b21*pow((double)2, (double)-21);
+	resultado += b22*pow((double)2, (double)-22);
+	resultado += b23*pow((double)2, (double)-23);
+	resultado += b24*pow((double)2, (double)-24);
+	resultado += b25*pow((double)2, (double)-25);
+	resultado += b26*pow((double)2, (double)-26);
+	resultado += b27*pow((double)2, (double)-27);
+	resultado += b28*pow((double)2, (double)-28);
+	resultado += b29*pow((double)2, (double)-29);
+	resultado += b30*pow((double)2, (double)-30);
+	resultado += b31*pow((double)2, (double)-31);
+	resultado += b32*pow((double)2, (double)-32);
+	resultado += b33*pow((double)2, (double)-33);
+	resultado += b34*pow((double)2, (double)-34);
+	resultado += b35*pow((double)2, (double)-35);
+	resultado += b36*pow((double)2, (double)-36);
+	resultado += b37*pow((double)2, (double)-37);
+	resultado += b38*pow((double)2, (double)-38);
+	resultado += b39*pow((double)2, (double)-39);
+	resultado += b40*pow((double)2, (double)-40);
+	resultado += b41*pow((double)2, (double)-41);
+	resultado += b42*pow((double)2, (double)-42);
+	resultado += b43*pow((double)2, (double)-43);
+	resultado += b44*pow((double)2, (double)-44);
+	resultado += b45*pow((double)2, (double)-45);
+	resultado += b46*pow((double)2, (double)-46);
+	resultado += b47*pow((double)2, (double)-47);
+	resultado += b48*pow((double)2, (double)-48);
+	resultado += b49*pow((double)2, (double)-49);
+	resultado += b50*pow((double)2, (double)-50);
+	resultado += b51*pow((double)2, (double)-51);
+	resultado += b52*pow((double)2, (double)-52);
+
+	resultado *= pow(-1, signal);
+	resultado *= pow(2, index);
+
+	return resultado;
+}
+
+u4 extract_double_high(union u_double u) {
+	printf("buscando high...\n");
+	u4 aux = 0;
+	aux |= (((u4)u.data[0])<<24);
+	aux |= (((u4)u.data[1])<<16);
+	aux |= (((u4)u.data[2])<<8);
+	aux |= ((u4)u.data[3]);
+
+	printf("%f %d\n", u.dbl, u.data[0]);
+	printf("%f %d\n", u.dbl, u.data[1]);
+	printf("%f %d\n", u.dbl, u.data[2]);
+	printf("%f %d\n", u.dbl, u.data[3]);
+	printf("aux: %x\n", aux);
+
+	return aux;
+}
+
+u4 extract_double_low(union u_double u) {
+	printf("buscando low...\n");
+	u4 aux = 0;
+	aux |= (((u4)u.data[4])<<24);
+	aux |= (((u4)u.data[5])<<16);
+	aux |= (((u4)u.data[6])<<8);
+	aux |= ((u4)u.data[7]);
+
+	printf("%f %d %x\n", u.dbl, u.nro, (u4)u.data[4]);
+	printf("%f %d %x\n", u.dbl, u.nro, (u4)u.data[5]);
+	printf("%f %d %x\n", u.dbl, u.nro, (u4)u.data[6]);
+	printf("%f %d %x\n", u.dbl, u.nro, (u4)u.data[7]);
+	printf("aux: %x\n", aux);
+
+	return aux;
 }
