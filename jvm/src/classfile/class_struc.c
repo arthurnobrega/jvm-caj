@@ -51,9 +51,6 @@ int read_constant_pool(FILE *arq, ClassFile *class_file) {
 		tag = fget_u1(arq);
 		info[i].tag = tag;
 
-#ifdef DEBUG
-		printf("\nswitch com %d\n", tag);
-#endif
 		switch (tag) {
 		/* elementos de mesma assinatura (u2) */
 		case CONSTANT_Class:
@@ -97,14 +94,15 @@ int read_constant_pool(FILE *arq, ClassFile *class_file) {
 #endif
 			info[i].info.long_info.high_bytes = fget_u4(arq);
 			info[i].info.long_info.low_bytes = fget_u4(arq);
+			i++;
 			break;
 		case CONSTANT_Double:
 #ifdef DEBUG
 		printf("\nCONSTANT_DOUBLE em lerConstantPool %d\n",tag);
 #endif
-			printf("%d %d", fget_u4(arq), fget_u4(arq));
 			info[i].info.double_info.high_bytes = fget_u4(arq);
 			info[i].info.double_info.low_bytes = fget_u4(arq);
+			i++;
 			break;
 
 		case CONSTANT_Utf8:
@@ -169,7 +167,7 @@ int read_methods(FILE *arq, ClassFile *class_file) {
 	u2 tamanho;
 	tamanho = fget_u2(arq);
 #ifdef DEBUG
-	printf(">>>lerMethods -> alocando tamanho do array\n");
+	printf(">>>lerMethods -> alocando tamanho do array? %d\n", tamanho);
 #endif
 	/* aloca tamanho do array */
 	class_file->methods_count = tamanho; 

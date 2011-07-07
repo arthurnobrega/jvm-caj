@@ -61,6 +61,7 @@ union u_double
 {
     double  dbl;
     char    data[sizeof(double)];
+    long long int nro;
 };
 
 
