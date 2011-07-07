@@ -3,12 +3,14 @@
  Instituto de Ciencias Exatas
  Departamento de Ciencia da Computacao
  Software Basico
- Turma A - 02/2010
+ Turma A - 01/2011
 
  Arthur Thiago Barbosa Nobrega 06/31205
+ Daniel Lucas A. de Freitas 05/96434
  Julio Cesar Junior 05/34986
  Renato Carrasco Costa 07/37771
  
+
  class.h: Define as funcoes basicas de execucao do .class como iniciacao, instanciacao e carregamento
  */
 #ifndef CLASS_
