@@ -3,12 +3,14 @@
  Instituto de Ciencias Exatas
  Departamento de Ciencia da Computacao
  Software Basico
- Turma A - 02/2010
+ Turma A - 01/2011
 
  Arthur Thiago Barbosa Nobrega 06/31205
+ Daniel Lucas A. de Freitas 05/96434
  Julio Cesar Junior 05/34986
  Renato Carrasco Costa 07/37771
  
+
  heap.h: Define as funcoes de manipulacao do vetor de classes carregadas (aqui chamado de heap)
  */
 #ifndef HEAP_H_
