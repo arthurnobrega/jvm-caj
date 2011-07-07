@@ -328,7 +328,9 @@ void invoke(int estatico) {
 			&& strcmp((char *) func_name, "println") == 0) {
 
 		/* TODO: da pra implementar o print() tambem... */
-
+#ifdef DEBUG
+		printf("\nfunc_desc: %s .....",(char *) func_desc);
+#endif
 		if (strcmp((char *) func_desc, "(C)V") == 0) {
 			printf("%c\n", pop());
 		} else if (strcmp((char *) func_desc, "(I)V") == 0) {
@@ -367,6 +369,8 @@ void invoke(int estatico) {
 			l1 = (l1<<32)|aux;
 
 			printf("%lld\n", l1);
+		}else if (strcmp((char *) func_desc, "()V") == 0) {
+			printf("\n");
 		}
 	} else {
 		heap_element *classe = get_heap_element(class_name);
@@ -1070,13 +1074,21 @@ int _baload() {
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
 	u4 indice = pop();
+	u4 aux,aux2;
 	u1 **vetor = malloc(sizeof(u1 *));
 	u4 referencia = pop();
 	*vetor = (u1 *) referencia;
+	aux2 = (int)((*(*vetor+indice))&0x00000080);
+	aux = (int)((*(*vetor+indice))&0x000000FF);
+	if(aux2){
+		aux = (int)((*(*vetor+indice))&0x000000FF);
+		aux = aux|0xFFFFFF00;
+	}
 #ifdef DEBUG
-	printf("baload - Elemento inserido na pilha: %x\n", *(*vetor+indice));
+	printf("baload - Elemento inserido na pilha: %x\n", aux);
 #endif
-	push(*(*vetor+indice));
+
+	push(aux);
 	return NORMAL_INST;
 }
 
@@ -1102,11 +1114,18 @@ int _saload() {
 	u4 indice = pop();
 	u2 **vetor = malloc(sizeof(u2 *));
 	u4 referencia = pop();
+	u4 aux,aux2;
 	*vetor = (u2 *) referencia;
+	aux2 = (int)((*(*vetor+indice))&0x00008000);
+		aux = (int)((*(*vetor+indice))&0x0000FFFF);
+		if(aux2){
+			aux = (int)((*(*vetor+indice))&0x0000FFFF);
+			aux = aux|0xFFFF0000;
+		}
 #ifdef DEBUG
 	printf("saload - Elemento inserido na pilha: %x\n", *(*vetor+indice));
 #endif
-	push(*(*vetor+indice));
+	push(aux);
 	return NORMAL_INST;
 }
 
@@ -2033,7 +2052,7 @@ int _frem() {
 	memcpy(&valor1_f,&v1,sizeof(float));
 	memcpy(&valor2_f,&v2,sizeof(float));
 
-	retorno_f = fmodf(valor1_f, valor2_f);
+	retorno_f = fmodf(valor2_f, valor1_f);
 	memcpy(&retorno, &retorno_f, sizeof(u4));
 
 	push(retorno);
@@ -2461,13 +2480,13 @@ int _f2i() {
 
 	valor = (int) pop();
 
-	memcpy(&valor_f, &valor, sizeof(float));
-
-	/*caso especial de valor == NaN*/
-	if (fpclassify(valor_f) == FP_NAN)
-		retorno = 0;
-	else
-		retorno = (int)(valor_f);
+//	memcpy(&valor_f, &valor, sizeof(float));
+//
+//	/*caso especial de valor == NaN*/
+//	if (fpclassify(valor_f) == FP_NAN)
+//		retorno = 0;
+//	else
+		retorno = (int)(valor);
 
 	push((u4) retorno);
 	return NORMAL_INST;
@@ -2651,10 +2670,8 @@ int _fcmpl() {
 	v2 = pop();
 
 	/*testa o caso NaN*/
-	f1 = (float)v1;
-	f2 = (float) v2;
-//	memcpy(&f1, &v1, sizeof(float));
-//	memcpy(&f2, &v2, sizeof(float));
+	memcpy(&f1, &v1, sizeof(float));
+	memcpy(&f2, &v2, sizeof(float));
 	if ((isnan(f1) == 1)||(isnan(f2) == 1)) {
 		push(-1);
 		return NORMAL_INST;
@@ -2688,9 +2705,9 @@ int _fcmpg() {
 		return NORMAL_INST;
 	}
 
-	if (v1 > v2)
+	if (f1 > f2)
 		push(-1);
-	else if (v1 < v2)
+	else if (f1 < f2)
 		push(1);
 	else
 		push(0);
@@ -3129,6 +3146,7 @@ int _ret() {
 }
 
 int _tableswitch() {
+
 	/*Não implementado.*/
 	return NAO_IMP;
 }
