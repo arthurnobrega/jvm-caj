@@ -100,8 +100,9 @@ void destroy_frame(int controle) {
 	if (controle == POP1) {
 		return1 = pop();
 	} else if (controle == POP2) {
-		return1 = pop();
+
 		return2 = pop();
+		return1 = pop();
 	}
 
 	frame_stack = frame_stack->prox;

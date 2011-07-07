@@ -246,7 +246,11 @@ int execute(heap_element *classe, char *method_name, char *method_desc, int is_s
 	/* pega quantidade de argumentos */
 	if (strcmp((char *) method_name, "main") != 0
 			&& strcmp((char *) method_desc, "([Ljava/lang/String;)V") != 0) {
-		count = count_args(method_desc);
+		if (strcmp((char *) method_desc, "(JJ)J") == 0) {
+			count = count_args(method_desc)*2;
+		}else{
+			count = count_args(method_desc);
+		}
 	}
 
 	/* dá pops nos argumentos */
@@ -1741,8 +1745,8 @@ int _lsub() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	long long int l1,l2, aux, aux2, retorno;
-
+	long long int l1,l2, retorno;
+	u4 aux, aux2;
 
 	l1 = pop();
 	aux = pop();
@@ -1751,9 +1755,7 @@ int _lsub() {
 	l2 = pop();
 	aux2 = pop();
 	l2 = ((long long int)l2<<32)|aux2;
-
 	retorno = l2 - l1;
-
 	aux = retorno&0x00000000FFFFFFFF;
 	push((u4)aux);
 	aux = retorno>>32;
