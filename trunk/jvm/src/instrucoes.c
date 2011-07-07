@@ -333,6 +333,7 @@ void invoke(int estatico) {
 #ifdef DEBUG
 		printf("\nfunc_desc: %s .....",(char *) func_desc);
 #endif
+
 		if (strcmp((char *) func_desc, "(C)V") == 0) {
 			printf("%c\n", pop());
 		} else if (strcmp((char *) func_desc, "(I)V") == 0) {
@@ -363,7 +364,7 @@ void invoke(int estatico) {
 
 			printf("%g\n", d1.dbl);
 
-		} else if (strcmp((char *) func_desc, "(L)V") == 0) {
+		} else if (strcmp((char *) func_desc, "(J)V") == 0) {
 			long long int l1, aux;
 
 			l1 = pop();
@@ -732,7 +733,7 @@ int _ldc2_w() {
 			break;
 
 		default:
-			printf("ldc(%d): Operando inválido!!!!",frame_stack->pc);
+			printf("ldc2_w(%d): Operando inválido!!!!",frame_stack->pc);
 			exit(1);
 		}
 		return NORMAL_INST;
@@ -856,7 +857,7 @@ int _lload_1() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	printf("%lld",(long long int)((frame_stack->variable[2]<<32)|(frame_stack->variable[1])));
+	//printf("%lld",(long long int)((frame_stack->variable[2]<<32)|(frame_stack->variable[1])));
 	push(frame_stack->variable[1]);
 	push(frame_stack->variable[2]);
 	return NORMAL_INST;
@@ -1009,7 +1010,7 @@ int _laload() {
 #ifdef DEBUG
 	printf("Elemento inserido na pilha: %x\n", *(*vetor+indice));
 #endif
-	push((*(*vetor+indice))&0x0000FFFF);
+	push((*(*vetor+indice))&0x00000000FFFFFFFF);
 	push((*(*vetor+indice))>>32);
 
 	return NORMAL_INST;
@@ -1226,8 +1227,8 @@ int _lstore_0() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[0] = pop();
 	frame_stack->variable[1] = pop();
+	frame_stack->variable[0] = pop();
 
 	return NORMAL_INST;
 }
@@ -1239,8 +1240,9 @@ int _lstore_1() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[1] = pop();
 	frame_stack->variable[2] = pop();
+
+	frame_stack->variable[1] = pop();
 
 	return NORMAL_INST;
 }
@@ -1253,8 +1255,8 @@ int _lstore_2() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[2] = pop();
 	frame_stack->variable[3] = pop();
+	frame_stack->variable[2] = pop();
 
 	return NORMAL_INST;
 }
@@ -1264,8 +1266,8 @@ int _lstore_3() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[3] = pop();
 	frame_stack->variable[4] = pop();
+	frame_stack->variable[3] = pop();
 
 	return NORMAL_INST;
 }
@@ -1307,8 +1309,8 @@ int _dstore_0() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[0] = pop();
 	frame_stack->variable[1] = pop();
+	frame_stack->variable[0] = pop();
 
 	return NORMAL_INST;
 }
@@ -1320,8 +1322,8 @@ int _dstore_1() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[1] = pop();
 	frame_stack->variable[2] = pop();
+	frame_stack->variable[1] = pop();
 
 		return NORMAL_INST;
 }
@@ -1332,8 +1334,8 @@ int _dstore_2() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[2] = pop();
 	frame_stack->variable[3] = pop();
+	frame_stack->variable[2] = pop();
 
 		return NORMAL_INST;
 }
@@ -1345,8 +1347,8 @@ int _dstore_3() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[3] = pop();
 	frame_stack->variable[4] = pop();
+	frame_stack->variable[3] = pop();
 
 		return NORMAL_INST;
 }
@@ -1406,7 +1408,7 @@ int _lastore() {
 
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	indice = pop();
 	referencia = pop();
@@ -1639,15 +1641,15 @@ int _ladd() {
 
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	l2 = pop();
 	aux2 = pop();
-	l2 = (l2<<32)|aux2;
-
+	l2 = ((long long int)l2<<32)|aux2;
 	retorno = l1 + l2;
 
-	aux = retorno&0x0000FFFF;
+	aux = retorno&0x00000000FFFFFFFF;
+
 	push((u4)aux);
 	aux = retorno>>32;
 	push((u4)aux);
@@ -1680,34 +1682,41 @@ int _dadd() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	union u_double d1,d2, auxD;
+	union u_double auxD;
 	u4 aux;
 
 	aux = pop();
-	d1.data[0] = (aux&0xFF000000)>>24;
-	d1.data[1] = (aux&0x00FF0000)>>16;
-	d1.data[2] = (aux&0x0000FF00)>>8;
-	d1.data[3] = (aux&0x000000FF);
+//	d1.data[0] = (aux&0xFF000000)>>24;
+//	d1.data[1] = (aux&0x00FF0000)>>16;
+//	d1.data[2] = (aux&0x0000FF00)>>8;
+//	d1.data[3] = (aux&0x000000FF);
+	double *d = (double *) malloc(sizeof(double));
+	d = (double *) memcpy(d,&aux,sizeof(u4));
+	//printf("%x %f\n", aux, *d);
+
 
 	aux = pop();
-	d1.data[4] = (aux&0xFF000000)>>24;
-	d1.data[5] = (aux&0x00FF0000)>>16;
-	d1.data[6] = (aux&0x0000FF00)>>8;
-	d1.data[7] = (aux&0x000000FF);
+	memcpy(d+4,&aux,sizeof(u4));
+//	d1.data[4] = (aux&0xFF000000)>>24;
+//	d1.data[5] = (aux&0x00FF0000)>>16;
+//	d1.data[6] = (aux&0x0000FF00)>>8;
+//	d1.data[7] = (aux&0x000000FF);
+//	printf("%x\n", aux);
+//	printf("MEU DOUBLE: %f\n", *d);
 
-	aux = pop();
-	d2.data[0] = (aux&0xFF000000)>>24;
-	d2.data[1] = (aux&0x00FF0000)>>16;
-	d2.data[2] = (aux&0x0000FF00)>>8;
-	d2.data[3] = (aux&0x000000FF);
-
-	aux = pop();
-	d2.data[4] = (aux&0xFF000000)>>24;
-	d2.data[5] = (aux&0x00FF0000)>>16;
-	d2.data[6] = (aux&0x0000FF00)>>8;
-	d2.data[7] = (aux&0x000000FF);
-
-	auxD.dbl = d1.dbl + d2.dbl;
+//	aux = pop();
+//	d2.data[0] = (aux&0xFF000000)>>24;
+//	d2.data[1] = (aux&0x00FF0000)>>16;
+//	d2.data[2] = (aux&0x0000FF00)>>8;
+//	d2.data[3] = (aux&0x000000FF);
+//
+//	aux = pop();
+//	d2.data[4] = (aux&0xFF000000)>>24;
+//	d2.data[5] = (aux&0x00FF0000)>>16;
+//	d2.data[6] = (aux&0x0000FF00)>>8;
+//	d2.data[7] = (aux&0x000000FF);
+//
+//	auxD.dbl = d1.dbl + d2.dbl;
 
 	aux = ((auxD.data[3]&0x00ff)<<24)|((auxD.data[2]&0x00ff)<<16)|((auxD.data[1]&0x00ff)<<8)|((auxD.data[0]&0x00ff));
 	push((u4)aux);
@@ -1737,15 +1746,15 @@ int _lsub() {
 
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	l2 = pop();
 	aux2 = pop();
-	l2 = (l2<<32)|aux2;
+	l2 = ((long long int)l2<<32)|aux2;
 
 	retorno = l2 - l1;
 
-	aux = retorno&0x0000FFFF;
+	aux = retorno&0x00000000FFFFFFFF;
 	push((u4)aux);
 	aux = retorno>>32;
 	push((u4)aux);
@@ -1830,7 +1839,7 @@ int _lmul() {
 
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	l2 = pop();
 	aux2 = pop();
@@ -1838,7 +1847,7 @@ int _lmul() {
 
 	retorno = l1 * l2;
 
-	aux = retorno&0x0000FFFF;
+	aux = retorno&0x00000000FFFFFFFF;
 	push((u4)aux);
 	aux = retorno>>32;
 	push((u4)aux);
@@ -1926,11 +1935,11 @@ int _ldiv() {
 
 		l1 = pop();
 		aux = pop();
-		l1 = (l1<<32)|aux;
+		l1 = ((long long int)l1<<32)|aux;
 
 		l2 = pop();
 		aux2 = pop();
-		l2 = (l2<<32)|aux2;
+		l2 = ((long long int)l2<<32)|aux2;
 
 		if (l1 == 0){
 			exit(DIV_ZERO);
@@ -1938,7 +1947,7 @@ int _ldiv() {
 
 		retorno = l2 / l1;
 
-		aux = retorno&0x0000FFFF;
+		aux = retorno&0x00000000FFFFFFFF;
 		push((u4)aux);
 		aux = retorno>>32;
 		push((u4)aux);
@@ -2028,14 +2037,14 @@ int _lrem() {
 	u4 aux;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	l2 = pop();
 	aux = pop();
-	l2 = (l2<<32)|aux;
+	l2 = ((long long int)l2<<32)|aux;
 
-	retorno = fmodl(l1,l2);
-	push((u4)(retorno&0x0000FFFF));
+	retorno = fmodl(l2,l1);
+	push((u4)(retorno&0x00000000FFFFFFFF));
 	push((u4)(retorno>>32));
 
 	return NORMAL_INST;
@@ -2112,10 +2121,10 @@ int _lneg() {
 	u4 aux;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	retorno = -1*l1;
-	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno&0x00000000FFFFFFFF));
 	push((u4)(retorno>>32));
 
 	return NORMAL_INST;
@@ -2184,10 +2193,10 @@ int _lshl() {
 	u4 aux;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	retorno = l1<<i;
-	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno&0x00000000FFFFFFFF));
 	push((u4)(retorno>>32));
 
 	return NORMAL_INST;
@@ -2216,10 +2225,10 @@ int _lshr() {
 	u4 aux;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	retorno = l1>>i;
-	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno&0x00000000FFFFFFFF));
 	push((u4)(retorno>>32));
 
 	return NORMAL_INST;
@@ -2257,10 +2266,10 @@ int _lushr() {
 	u4 aux;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	retorno = l1>>i;
-	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno&0x00000000FFFFFFFF));
 	push((u4)(retorno>>32));
 
 	return NORMAL_INST;
@@ -2284,14 +2293,14 @@ int _land() {
 	u4 aux;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	l2 = pop();
 	aux = pop();
-	l2 = (l2<<32)|aux;
+	l2 = ((long long int)l2<<32)|aux;
 
 	retorno = l1&l2;
-	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno&0x00000000FFFFFFFF));
 	push((u4)(retorno>>32));
 
 	return NORMAL_INST;
@@ -2314,14 +2323,14 @@ int _lor() {
 	u4 aux;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	l2 = pop();
 	aux = pop();
-	l2 = (l2<<32)|aux;
+	l2 = ((long long int)l2<<32)|aux;
 
 	retorno = l1|l2;
-	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno&0x00000000FFFFFFFF));
 	push((u4)(retorno>>32));
 
 	return NORMAL_INST;
@@ -2344,14 +2353,14 @@ int _lxor() {
 	u4 aux;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	l2 = pop();
 	aux = pop();
-	l2 = (l2<<32)|aux;
+	l2 = ((long long int)l2<<32)|aux;
 
 	retorno = l1^l2;
-	push((u4)(retorno&0x0000FFFF));
+	push((u4)(retorno&0x00000000FFFFFFFF));
 	push((u4)(retorno>>32));
 
 	return NORMAL_INST;
@@ -2383,7 +2392,7 @@ int _i2l() {
 
 	retorno = (long long int) i;
 
-	aux = retorno&0x0000FFFF;
+	aux = retorno&0x00000000FFFFFFFF;
 	push((u4)aux);
 	aux = retorno>>32;
 	push((u4)aux);
@@ -2431,7 +2440,7 @@ int _l2i() {
 	u4 aux, retorno;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	retorno = (int) l1;
 
@@ -2441,10 +2450,11 @@ int _l2i() {
 
 int _l2f() {
 	long long int l1;
-	u4 aux, retorno;
+	u4 aux;
+	float retorno;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	retorno = (float) l1;
 
@@ -2459,7 +2469,7 @@ int _l2d() {
 	union u_double auxD;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	retorno = (double) l1;
 	auxD.dbl = retorno;
@@ -2502,7 +2512,7 @@ int _f2l() {
 
 	retorno = (long long int) f1;
 
-	aux = retorno&0x0000FFFF;
+	aux = retorno&0x00000000FFFFFFFF;
 	push((u4)aux);
 	aux = retorno>>32;
 	push((u4)aux);
@@ -2566,7 +2576,7 @@ int _d2l() {
 
 	retorno = (long long int) d1.dbl;
 
-	aux = retorno&0x0000FFFF;
+	aux = retorno&0x00000000FFFFFFFF;
 	push((u4)aux);
 	aux = retorno>>32;
 	push((u4)aux);
@@ -2642,11 +2652,11 @@ int _lcmp() {
 	long long int l1,l2,aux;
 	l1 = pop();
 	aux = pop();
-	l1 = (l1<<32)|aux;
+	l1 = ((long long int)l1<<32)|aux;
 
 	l2 = pop();
 	aux = pop();
-	l2 = (l2<<32)|aux;
+	l2 = ((long long int)l2<<32)|aux;
 
 	if (l1 > l2)
 		push(-1);
