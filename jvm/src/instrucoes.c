@@ -342,6 +342,31 @@ void invoke(int estatico) {
 			printf("%f\n", *f);
 		} else if (strcmp((char *) func_desc, "(Ljava/lang/String;)V") == 0) {
 			printf("%s\n", (char *) pop());
+		} else if (strcmp((char *) func_desc, "(D)V") == 0) {
+			union u_double d1;
+			u4 aux;
+
+			aux = pop();
+			d1.data[0] = (aux&0xFF000000)>>24;
+			d1.data[1] = (aux&0x00FF0000)>>16;
+			d1.data[2] = (aux&0x0000FF00)>>8;
+			d1.data[3] = (aux&0x000000FF);
+
+			aux = pop();
+			d1.data[4] = (aux&0xFF000000)>>24;
+			d1.data[5] = (aux&0x00FF0000)>>16;
+			d1.data[6] = (aux&0x0000FF00)>>8;
+			d1.data[7] = (aux&0x000000FF);
+
+			printf("%g\n", *d1.dbl);
+		} else if (strcmp((char *) func_desc, "(L)V") == 0) {
+			long long int l1, aux;
+
+			l1 = pop();
+			aux = pop();
+			l1 = (l1<<32)|aux;
+
+			printf("%l\n", *l1);
 		}
 	} else {
 		heap_element *classe = get_heap_element(class_name);

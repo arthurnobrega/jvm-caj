@@ -51,10 +51,16 @@ int read_constant_pool(FILE *arq, ClassFile *class_file) {
 		tag = fget_u1(arq);
 		info[i].tag = tag;
 
+#ifdef DEBUG
+		printf("\nswitch com %d\n", tag);
+#endif
 		switch (tag) {
 		/* elementos de mesma assinatura (u2) */
 		case CONSTANT_Class:
 		case CONSTANT_String:
+#ifdef DEBUG
+		printf("\nCONSTANT_String em lerConstantPool %d\n",tag);
+#endif
 			info[i].info.string_info.string_index = fget_u2(arq);
 			break;
 
@@ -63,20 +69,32 @@ int read_constant_pool(FILE *arq, ClassFile *class_file) {
 		case CONSTANT_Methodref:
 		case CONSTANT_InterfaceMethodref:
 		case CONSTANT_NameAndType:
+#ifdef DEBUG
+		printf("\nCONSTANT_NameAndType em lerConstantPool %d\n",tag);
+#endif
 			info[i].info.name_and_type_info.name_index = fget_u2(arq);
 			info[i].info.name_and_type_info.descriptor_index = fget_u2(arq);
 			break;
 
 			/* elementos de mesma assinatura (u4) */
 		case CONSTANT_Integer:
+#ifdef DEBUG
+		printf("\nCONSTANT_Integer em lerConstantPool %d\n",tag);
+#endif
 			info[i].info.integer_info.bytes = fget_u4(arq);
 			break;
 		case CONSTANT_Float:
+#ifdef DEBUG
+		printf("\nCONSTANT_Float em lerConstantPool %d\n",tag);
+#endif
 			info[i].info.float_info.bytes = fget_u4(arq);
 			break;
 
 			/* elementos de mesma assinatura (u4, u4) */
 		case CONSTANT_Long:
+#ifdef DEBUG
+		printf("\nCONSTANT_Long em lerConstantPool %d\n",tag);
+#endif
 			info[i].info.long_info.high_bytes = fget_u4(arq);
 			info[i].info.long_info.low_bytes = fget_u4(arq);
 			break;
@@ -84,11 +102,15 @@ int read_constant_pool(FILE *arq, ClassFile *class_file) {
 #ifdef DEBUG
 		printf("\nCONSTANT_DOUBLE em lerConstantPool %d\n",tag);
 #endif
+			printf("%d %d", fget_u4(arq), fget_u4(arq));
 			info[i].info.double_info.high_bytes = fget_u4(arq);
 			info[i].info.double_info.low_bytes = fget_u4(arq);
 			break;
 
 		case CONSTANT_Utf8:
+#ifdef DEBUG
+		printf("\nCONSTANT_Utf8 em lerConstantPool %d\n",tag);
+#endif
 			read_utf8(arq, &(info[i].info.utf8_info));
 			break;
 

@@ -1,6 +1,8 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
+#define DEBUG
+
 /*#ifdef DEBUG
 	#define DBG(x, ...) printf("DEBUG: "x, ## __VA_ARGS__)
 
