@@ -2653,25 +2653,19 @@ int _fcmpl() {
 	/*testa o caso NaN*/
 	f1 = (float)v1;
 	f2 = (float) v2;
-	printf("\n..........%d %d\n",v1,v2);
 //	memcpy(&f1, &v1, sizeof(float));
 //	memcpy(&f2, &v2, sizeof(float));
-	if ((isnan(f1) == 0)||(isnan(f2) == 0)) {
+	if ((isnan(f1) == 1)||(isnan(f2) == 1)) {
 		push(-1);
 		return NORMAL_INST;
 	}
 	if (f1 > f2){
-printf("maior");
-		push(1);
-	}else if (f1 < f2){
-
-		printf("menor");
 		push(-1);
-}else{
-
-	printf("igual\n");
+	}else if (f1 < f2){
+		push(1);
+	}else{
 		push(0);
-}
+	}
 	return NORMAL_INST;
 }
 
@@ -2689,7 +2683,7 @@ int _fcmpg() {
 	/*testa o caso NaN*/
 	memcpy(&f1, &v1, sizeof(float));
 	memcpy(&f2, &v2, sizeof(float));
-	if ((isnan(f1) == 0)||(isnan(f2) == 0)) {
+	if ((isnan(f1) == 1)||(isnan(f2) == 1)) {
 		push(1);
 		return NORMAL_INST;
 	}
