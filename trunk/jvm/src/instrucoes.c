@@ -345,7 +345,6 @@ void invoke(int estatico) {
 		} else if (strcmp((char *) func_desc, "(D)V") == 0) {
 			union u_double d1;
 			u4 aux;
-
 			aux = pop();
 			d1.data[0] = (aux&0xFF000000)>>24;
 			d1.data[1] = (aux&0x00FF0000)>>16;
@@ -358,7 +357,8 @@ void invoke(int estatico) {
 			d1.data[6] = (aux&0x0000FF00)>>8;
 			d1.data[7] = (aux&0x000000FF);
 
-			printf("%g\n", *d1.dbl);
+			printf("%g\n", d1.dbl);
+
 		} else if (strcmp((char *) func_desc, "(L)V") == 0) {
 			long long int l1, aux;
 
@@ -366,7 +366,7 @@ void invoke(int estatico) {
 			aux = pop();
 			l1 = (l1<<32)|aux;
 
-			printf("%l\n", *l1);
+			printf("%lld\n", l1);
 		}
 	} else {
 		heap_element *classe = get_heap_element(class_name);
@@ -841,8 +841,8 @@ int _lload_0() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[1]);
 	push(frame_stack->variable[0]);
+	push(frame_stack->variable[1]);
 	return NORMAL_INST;
 }
 
@@ -850,8 +850,9 @@ int _lload_1() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[2]);
+	printf("%lld",(long long int)((frame_stack->variable[2]<<32)|(frame_stack->variable[1])));
 	push(frame_stack->variable[1]);
+	push(frame_stack->variable[2]);
 	return NORMAL_INST;
 }
 
@@ -859,8 +860,9 @@ int _lload_2() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[3]);
+
 	push(frame_stack->variable[2]);
+	push(frame_stack->variable[3]);
 	return NORMAL_INST;
 }
 
@@ -868,8 +870,8 @@ int _lload_3() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	push(frame_stack->variable[4]);
 	push(frame_stack->variable[3]);
+	push(frame_stack->variable[4]);
 	return NORMAL_INST;
 }
 
@@ -1259,6 +1261,7 @@ int _fstore_1() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
+
 	frame_stack->variable[1] = pop();
 	return NORMAL_INST;
 }
@@ -1994,7 +1997,7 @@ int _irem() {
 	valor1 = (int) pop();
 	valor2 = (int) pop();
 	/*retorno = parametro1é(parametro1 / parametro2) * parametro2*/
-	push((u4)(valor1 - (valor1 /valor2) * valor2));
+	push((u4)(valor2 - (valor2 /valor1) * valor1));
 	return NORMAL_INST;
 }
 
@@ -2147,9 +2150,8 @@ int _ishl() {
 	valor2 = (int) pop();
 
 	/*o valor2 eh supostamente um valor valido entre 0 e 31*/
-	valor2 &= MASK_SHIFT;
-
-	push((u4) (valor1 << valor2));
+	valor1 &= MASK_SHIFT;
+	push((u4) (valor2 << valor1));
 	return NORMAL_INST;
 }
 
@@ -2179,9 +2181,9 @@ int _ishr() {
 	valor2 = (int) pop();
 
 	/*o valor2 eh supostamente um valor valido entre 0 e 31*/
-	valor2 &= MASK_SHIFT;
+	valor1 &= MASK_SHIFT;
 
-	push((u4) (valor1 >> valor2));
+	push((u4) (valor2 >> valor1));
 	return NORMAL_INST;
 }
 
@@ -2592,9 +2594,11 @@ int _i2c() {
 	int valor1;
 	char retorno;
 
-	valor1 = (int) pop();
+	valor1 = ((u4) pop());
 	retorno = (char) valor1;
-
+	if(valor1<-1){
+		retorno = (char)63;
+	}
 	push((u4)retorno);
 	return NORMAL_INST;
 }
@@ -2604,10 +2608,10 @@ int _i2s() {
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
 	int valor1;
-	u2 retorno;
+	short int retorno;
 
 	valor1 = (int) pop();
-	retorno = (u2) valor1;
+	retorno = (short) valor1;
 
 	push((u4)retorno);
 	return NORMAL_INST;
@@ -2643,24 +2647,31 @@ int _fcmpl() {
 	float f1, f2;
 	u4 v1, v2;
 
+	v1 = pop();
+	v2 = pop();
+
 	/*testa o caso NaN*/
-	memcpy(&f1, &v1, sizeof(float));
-	memcpy(&f2, &v2, sizeof(float));
+	f1 = (float)v1;
+	f2 = (float) v2;
+	printf("\n..........%d %d\n",v1,v2);
+//	memcpy(&f1, &v1, sizeof(float));
+//	memcpy(&f2, &v2, sizeof(float));
 	if ((isnan(f1) == 0)||(isnan(f2) == 0)) {
 		push(-1);
 		return NORMAL_INST;
 	}
-
-	v1 = pop();
-	v2 = pop();
-
-	if (v1 > v2)
+	if (f1 > f2){
+printf("maior");
 		push(1);
-	else if (v1 < v2)
-		push(-1);
-	else
-		push(0);
+	}else if (f1 < f2){
 
+		printf("menor");
+		push(-1);
+}else{
+
+	printf("igual\n");
+		push(0);
+}
 	return NORMAL_INST;
 }
 
@@ -2671,6 +2682,10 @@ int _fcmpg() {
 	float f1, f2;
 	u4 v1, v2;
 
+
+	v1 = pop();
+	v2 = pop();
+
 	/*testa o caso NaN*/
 	memcpy(&f1, &v1, sizeof(float));
 	memcpy(&f2, &v2, sizeof(float));
@@ -2679,13 +2694,10 @@ int _fcmpg() {
 		return NORMAL_INST;
 	}
 
-	v1 = pop();
-	v2 = pop();
-
 	if (v1 > v2)
-		push(1);
-	else if (v1 < v2)
 		push(-1);
+	else if (v1 < v2)
+		push(1);
 	else
 		push(0);
 
