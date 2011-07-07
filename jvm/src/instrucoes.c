@@ -359,21 +359,21 @@ void invoke(int estatico) {
 #ifdef DEBUG
 		printf("entrou para imprimir um double\n");
 #endif
-			union u_double d1;
+			union u_double unionDbl1;
 			u4 aux;
 			aux = pop();
-			d1.data[0] = (aux&0xFF000000)>>24;
-			d1.data[1] = (aux&0x00FF0000)>>16;
-			d1.data[2] = (aux&0x0000FF00)>>8;
-			d1.data[3] = (aux&0x000000FF);
-
+			unionDbl1.data[0] = (aux&0xFF000000)>>24;
+			unionDbl1.data[1] = (aux&0x00FF0000)>>16;
+			unionDbl1.data[2] = (aux&0x0000FF00)>>8;
+			unionDbl1.data[3] = (aux&0x000000FF);
 			aux = pop();
-			d1.data[4] = (aux&0xFF000000)>>24;
-			d1.data[5] = (aux&0x00FF0000)>>16;
-			d1.data[6] = (aux&0x0000FF00)>>8;
-			d1.data[7] = (aux&0x000000FF);
+			unionDbl1.data[4] = (aux&0xFF000000)>>24;
+			unionDbl1.data[5] = (aux&0x00FF0000)>>16;
+			unionDbl1.data[6] = (aux&0x0000FF00)>>8;
+			unionDbl1.data[7] = (aux&0x000000FF);
+			double primeiro = get_double(unionDbl1);
 
-			printf("%g\n", d1.dbl);
+			printf("%f\n", primeiro);
 
 		} else if (strcmp((char *) func_desc, "(J)V") == 0) {
 #ifdef DEBUG
@@ -1327,8 +1327,8 @@ int _dstore_0() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[1] = pop();
 	frame_stack->variable[0] = pop();
+	frame_stack->variable[1] = pop();
 
 	return NORMAL_INST;
 }
@@ -1340,8 +1340,11 @@ int _dstore_1() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[2] = pop();
 	frame_stack->variable[1] = pop();
+	frame_stack->variable[2] = pop();
+#ifdef DEBUG
+	printf("\nGuardando em frame_stack->variable[] dstore_1 1:: %x 2:: %x\n",frame_stack->variable[1],frame_stack->variable[2]);
+#endif
 
 		return NORMAL_INST;
 }
@@ -1352,8 +1355,8 @@ int _dstore_2() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[3] = pop();
 	frame_stack->variable[2] = pop();
+	frame_stack->variable[3] = pop();
 
 		return NORMAL_INST;
 }
@@ -1365,8 +1368,8 @@ int _dstore_3() {
 #ifdef DEBUG
 	printf("Instrução 0x%x executada\n", (u1)frame_stack->code_attribute->code[frame_stack->pc]);
 #endif
-	frame_stack->variable[4] = pop();
 	frame_stack->variable[3] = pop();
+	frame_stack->variable[4] = pop();
 
 		return NORMAL_INST;
 }
@@ -1705,7 +1708,9 @@ int _dadd() {
 
 	aux = pop();
 	unionDbl1.data[0] = (aux&0xFF000000)>>24;
+#ifdef DEBUG
 	printf("data0=%x\n", unionDbl1.data[0]);
+#endif
 	unionDbl1.data[1] = (aux&0x00FF0000)>>16;
 	unionDbl1.data[2] = (aux&0x0000FF00)>>8;
 	unionDbl1.data[3] = (aux&0x000000FF);
@@ -1729,7 +1734,9 @@ int _dadd() {
 	double segundo = get_double(unionDbl1);
 
 	unionDbl1.dbl = primeiro + segundo;
-	printf("soma=%f", unionDbl1.dbl);
+#ifdef DEBUG
+	printf("soma(%x,%x)=%x", primeiro,segundo,unionDbl1.dbl);
+#endif
 
 	aux = extract_double_high(unionDbl1);
 	push((u4)aux);
@@ -2766,7 +2773,7 @@ int _dcmpl() {
 		d2.data[6] = (aux&0x0000FF00)>>8;
 		d2.data[7] = (aux&0x000000FF);
 
-		if((isnan(d1.dbl) == 0)||(isnan(d2.dbl) == 0)){
+		if((isnan(d1.dbl) == 1)||(isnan(d2.dbl) == 1)){
 				push(-1);/*NaN*/
 				return NORMAL_INST;
 			}
@@ -2808,7 +2815,7 @@ int _dcmpg() {
 	d2.data[6] = (aux&0x0000FF00)>>8;
 	d2.data[7] = (aux&0x000000FF);
 
-	if((isnan(d1.dbl) == 0)||(isnan(d2.dbl) == 0)){
+	if((isnan(d1.dbl) == 1)||(isnan(d2.dbl) == 1)){
 			push(1);/*NaN*/
 			return NORMAL_INST;
 		}
@@ -3621,29 +3628,36 @@ double get_double(union u_double u) {
 
 	resultado *= pow(-1, signal);
 	resultado *= pow(2, index);
-
+#ifdef DEBUG
+printf("\nresultado: %f\n",resultado);
+#endif
 	return resultado;
 }
 
 u4 extract_double_high(union u_double u) {
+#ifdef DEBUG
 	printf("buscando high...\n");
+#endif
 	u4 aux = 0;
 	aux |= (((u4)u.data[0])<<24);
 	aux |= (((u4)u.data[1])<<16);
 	aux |= (((u4)u.data[2])<<8);
 	aux |= ((u4)u.data[3]);
-
+#ifdef DEBUG
 	printf("%f %d\n", u.dbl, u.data[0]);
 	printf("%f %d\n", u.dbl, u.data[1]);
 	printf("%f %d\n", u.dbl, u.data[2]);
 	printf("%f %d\n", u.dbl, u.data[3]);
 	printf("aux: %x\n", aux);
+#endif
 
 	return aux;
 }
 
 u4 extract_double_low(union u_double u) {
+#ifdef DEBUG
 	printf("buscando low...\n");
+#endif
 	u4 aux = 0;
 	aux |= (((u4)u.data[4])<<24);
 	aux |= (((u4)u.data[5])<<16);
@@ -3654,7 +3668,9 @@ u4 extract_double_low(union u_double u) {
 	printf("%f %d %x\n", u.dbl, u.nro, (u4)u.data[5]);
 	printf("%f %d %x\n", u.dbl, u.nro, (u4)u.data[6]);
 	printf("%f %d %x\n", u.dbl, u.nro, (u4)u.data[7]);
+#ifdef DEBUG
 	printf("aux: %x\n", aux);
+#endif
 
 	return aux;
 }
